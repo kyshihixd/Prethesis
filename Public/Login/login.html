@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/Login/stylesLog.css" rel = "stylesheet" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+    <title>User Form</title>
+</head>
+
+<body>
+    <form id="LoginForm">
+        <h3>Log in</h3>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required />
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required />
+        <div id = "showPass">
+            <input type="checkbox" onclick="passwordShow()" class = "checkbox-label"><p>Show password</p>
+        </div>
+        <button type="submit" id="submitUser">Submit</button>
+
+        <p>Don't have an accout ? <a href="/Registration/registration.html">Sign-up</a> here </p> 
+        <div class="social">
+            <div class="go"><i class="fab fa-google"></i>  Google</div>
+            <div class="fb"><i class="fab fa-facebook"></i>  Facebook</div>
+          </div>
+    </form>
+
+    <script>
+        function passwordShow() {
+            var pass = document.getElementById("password");
+            if (pass.type === "password"){
+                pass.type = "text";
+            }
+            else {
+                pass.type = "password";
+            }
+        }
+
+        document.getElementById("LoginForm").addEventListener("submit", async (e)=> {
+            e.preventDefault();
+
+            const formData = {
+                username: document.getElementById("username").value,
+                password: document.getElementById("password").value,
+            };
+
+            try {
+                const response = await fetch("/LoginUser", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(formData),
+                });
+
+                if (response.ok) {
+                    document.location='../Mainpage/Mainpage.html';
+                } else {
+                    alert("Failed to save user data.");
+                }
+            } catch (err) {
+                console.error("Error:", err);
+                alert("An error occurred while saving user data.");
+            }
+        })
+    </script>
+</body>
+
+</html>

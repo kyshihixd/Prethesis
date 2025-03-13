@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/Registration/stylesReg.css" media="screen">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+    <title>User Form</title>
+</head>
+
+<body>
+    <div class="background">
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    <form id="userForm">
+        <h3>User Registration</h3>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" placeholder="Email or Username" />
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required placeholder="Password" />
+
+        <button type="submit" id="submitUser">Submit</button>
+        <p>Already have an accout ? <a href="/Login/login.html">Login</a> here </p>      
+    </form>
+
+    <script>
+        document
+            .getElementById("userForm")
+            .addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+                const formData = {
+                    username: document.getElementById("username").value,
+                    password: document.getElementById("password").value,
+                };
+
+                try {
+                    const response = await fetch("/submitUser", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(formData),
+                    });
+
+                    if (response.ok) {
+                        alert("User data saved successfully!");
+                    } else {
+                        alert("Failed to save user data.");
+                    }
+                } catch (err) {
+                    console.error("Error:", err);
+                    alert("An error occurred while saving user data.");
+                }
+            });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,57 @@
+User {
+    _id
+    gmail
+    username
+    name
+    nationality
+    password
+    -Review-
+    -comments-
+}
+Review {
+    _id
+    -User-
+    -Book-
+    -comments-
+    Rating
+    Content
+    upvote
+    downvote
+}
+
+Comments {
+    _id
+    -user-
+    -book-
+    Content
+    upvote
+    downvote
+}
+
+Books{
+    _id
+    Bookname
+    Illustrator
+    Language
+    -author-
+    -review
+    series
+    Genre
+    Publisher
+    Publication_date
+    Publication_place
+    pages
+    ISBN
+}
+
+Author {
+    _id
+    name
+    date_of_birth
+    place_of_birth
+    pen_name
+    occupation
+    Education
+    genre
+    -book-
+}
