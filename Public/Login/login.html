@@ -4,47 +4,64 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="/Login/stylesLog.css" rel = "stylesheet" />
-    <link rel="preconnect" href="https://fonts.gstatic.com">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
-    <title>User Form</title>
+    
+    <title>Login</title>
 </head>
 
-<body>
-    <form id="LoginForm">
-        <h3>Log in</h3>
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required />
-
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required />
-        <div id = "showPass">
-            <input type="checkbox" onclick="passwordShow()" class = "checkbox-label"><p>Show password</p>
+<body class = "bg-dark">
+    <div class=" container col vh-100 d-flex align-items-center  ">
+        <div class="row w-100 text-center">
+            <div class="col-8 col align-items-center justify-content-start flex-nowrap">
+                <img src="/images/borcelle.png" alt="Logo" class="img-fluid mb-3" style="max-width: 250px;">
+                <h1 class="text-light">A place where you can share your unfiltered opinions about books</h1>
+            </div>
         </div>
-        <button type="submit" id="submitUser">Submit</button>
 
-        <p>Don't have an accout ? <a href="/Registration/registration.html">Sign-up</a> here </p> 
-        <div class="social">
-            <div class="go"><i class="fab fa-google"></i>  Google</div>
-            <div class="fb"><i class="fab fa-facebook"></i>  Facebook</div>
-          </div>
-    </form>
+        <div class="row  justify-content-end w-100">
+            <div class="col-9 shadow-lg">
+                    <form id="LoginForm" class="p-4 shadow-lg rounded bg-light">
+                        <h3 class="text-center text-dark">Log in</h3>
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username:</label>
+                            <input type="text" class="form-control" id="username" placeholder="Email or Username" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password:</label>
+                            <input type="password" class="form-control" id="password" placeholder="Enter password" required />
+                        </div>
+
+
+                        <button type="submit" class="btn btn-primary w-100">Login</button>
+
+                        <p class="mt-3 text-center">Don't have an account? <a href="/Registration/registration.html">Sign-up here</a></p>
+
+                        
+                        <div class="d-flex justify-content-center mt-3">
+                            <button type="button" class="btn btn-outline-danger me-2">
+                                <i class="fab fa-google"></i> Google
+                            </button>
+                            <button type="button" class="btn btn-outline-primary">
+                                <i class="fab fa-facebook"></i> Facebook
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         function passwordShow() {
             var pass = document.getElementById("password");
-            if (pass.type === "password"){
-                pass.type = "text";
-            }
-            else {
-                pass.type = "password";
-            }
+            pass.type = pass.type === "password" ? "text" : "password";
         }
 
-        document.getElementById("LoginForm").addEventListener("submit", async (e)=> {
+        document.getElementById("LoginForm").addEventListener("submit", async (e) => {
             e.preventDefault();
-
             const formData = {
                 username: document.getElementById("username").value,
                 password: document.getElementById("password").value,
@@ -53,22 +70,20 @@
             try {
                 const response = await fetch("/LoginUser", {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(formData),
                 });
 
                 if (response.ok) {
-                    document.location='../Mainpage/Mainpage.html';
+                    document.location = '../Mainpage/Mainpage.html';
                 } else {
-                    alert("Failed to save user data.");
+                    alert("Failed to login.");
                 }
             } catch (err) {
                 console.error("Error:", err);
-                alert("An error occurred while saving user data.");
+                alert("An error occurred while logging in.");
             }
-        })
+        });
     </script>
 </body>
 

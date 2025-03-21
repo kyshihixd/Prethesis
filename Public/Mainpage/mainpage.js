@@ -15,13 +15,25 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         books.forEach(book => {
             const bookCard = document.createElement("div");
-            bookCard.classList.add("book-card");
+            
+
+            let reviewContent = "";
+            if (book.review.length > 0){
+                for (let i = 0; i < book.review.length; i++){
+                    reviewContent += book.review[i].content + "";
+                }
+            }
+            else {reviewContent = "No content"};
 
             bookCard.innerHTML = `
-                <h3>${book.title}</h3>
-                <p><strong>Author:</strong> ${book.author ? book.author.name : "Unknown"}</p>
-                <p><strong>Review:</strong> ${book.review.length > 0 ? book.review[0].content : "No reviews yet"}</p>
-                <a href="/book/${book._id}">Read More</a>
+                <div class= "card mb-3 w-75 mx-auto book-card" onclick="gotobook('${book._id}')">
+                    <div class = "card-body">
+                        <h3>${book.title}</h3>
+                        <p><strong>Author:</strong> ${book.author ? book.author.name : "Unknown"}</p>
+                        <p><strong>Review:</strong> ${reviewContent}</p>
+                        
+                    </div>
+                </div>
             `;
 
             bookList.appendChild(bookCard);
@@ -31,3 +43,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         bookList.innerHTML = "<p>Error loading books. Check console for details.</p>";
     }
 });
+
+function gotobook(bookId) {
+    window.location.href = `/Mainpage/book-details.html?id=${bookId}`;
+}

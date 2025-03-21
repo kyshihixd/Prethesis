@@ -2,6 +2,7 @@ const User = require('../Server/Models/User');
 const Book = require('../Server/Models/Book');
 const Author = require('../Server/Models/Author');
 const connectDB = require('./Server');
+const Review = require('../Server/Models/Review');
 
 connectDB();
 
@@ -62,4 +63,36 @@ async function updateBook() {
         console.error("Error updating book:", error);
     }
 }
-updateBook();
+
+async function addReview() {
+    try {
+        const book = await Book.findOne({title: "Test book 2"}).exec();
+
+        const user = await User.findOne({username: "logintest"}).exec();
+        const review = new Review({
+            rating: 5,
+            content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+            user: user._id,
+            book: book._id
+        });
+
+        const updateBook = await Book.findOneAndUpdate(
+            {_id: book._id},
+            {review: review._id},
+            {new: true}
+        )
+        const updateUser = await User.findOneAndUpdate(
+            {_id: user._id},
+            {review: review._id},
+            {new: true}
+        )
+
+        await review.save();
+        console.log("Author added successfully:", review);
+    } catch (error) {
+        console.error("Error adding book:", error);
+    }
+}
+
+addReview();
+

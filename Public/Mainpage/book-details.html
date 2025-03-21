@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+            background-color: #1a1a1a;
+            color: aliceblue;
+            padding: 20px;
+        }
+        .book-details {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="book-details">
+        <h1>Book Details</h1>
+        <div id="book-info">
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const bookInfo = document.getElementById("book-info");
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const bookId = urlParams.get('id');
+            console.log(bookId);
+            if (!bookId) {
+                bookInfo.innerHTML = "<p>Book ID not found in URL.</p>";
+                return;
+            }
+
+            try {
+                const response = await fetch(`/books/${bookId}`);
+                if (!response.ok) throw new Error("Failed to fetch book details");
+
+                const book = await response.json();
+                console.log("Fetched Book:", book);
+
+                let reviewContent = "";
+                let rating = "";
+                if (book.review.length > 0) {
+                    for (let i = 0; i < book.review.length; i++) {
+                        reviewContent += `<p>${book.review[i].content}</p>`;
+                        rating = book.review[i].rating;
+                    }
+                } else {
+                    reviewContent = "<p>No reviews available.</p>";
+                }
+
+                bookInfo.innerHTML = `
+                    <h2>${book.title}</h2>
+                    <p><strong>Author:</strong> ${book.author ? book.author.name : "Unknown"}</p>
+                    <p>Book description: ${book.description} </p>
+                    <p>Genre: ${book.genre} </p>
+                    <p>Pages: ${book.pages} </p>
+                    <p>Languages: ${book.Language} </p>
+                    <p>ISBN: ${book.isbn} </p>
+                    <h3>Review: (Rating: ${rating})</h3>
+                    ${reviewContent}
+                `;
+            } catch (error) {
+                console.error("Error fetching book details:", error);
+                bookInfo.innerHTML = "<p>Error loading book details. Check console for details.</p>";
+            }
+        });
+    </script>
+</body>
+</html>

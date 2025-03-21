@@ -20,9 +20,9 @@ app.get('/', (req, res) => {
 
 connectDB();
 
-app.use('/', userRoutes);
-app.use('/', loginRoutes);
-app.use('/', mainRoutes);
+app.use( userRoutes);
+app.use( loginRoutes);
+app.use( mainRoutes);
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);

@@ -1,2 +1,3 @@
 # Prethesis
  
+THIS WEEK: FINISH DESIGN AND USE CASE
