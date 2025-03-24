@@ -45,5 +45,5 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 function gotobook(bookId) {
-    window.location.href = `/Mainpage/book-details.html?id=${bookId}`;
+    window.location.href = `/main/books?id=${bookId}`;
 }

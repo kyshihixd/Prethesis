@@ -2,9 +2,14 @@ const express = require('express');
 const User = require('../Server/Models/User');
 const bcrypt = require('bcrypt');
 const router = express.Router();
+const path = require('path');
 
+router.get('/Login', (req, res) => {
+    console.log(path.join(__dirname, '../Public/Login/login.html'));
+    res.sendFile(path.join(__dirname, '../Public/Login/login.html'));
+});
 
-router.post('/LoginUser', async (req, res) => {
+router.post('/Login', async (req, res) => {
     try {
         const { username, password } = req.body;
         const existingUser = await User.findOne({ username });

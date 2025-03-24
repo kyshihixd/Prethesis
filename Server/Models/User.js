@@ -15,7 +15,6 @@ const userSchema = new mongoose.Schema({
     },
     gmail: {
         type: String,
-        required: true,
     },
     name: {
         type: String,

@@ -2,6 +2,11 @@ const express = require('express');
 const Book = require('../Server/Models/Book'); 
 const Review = require('../Server/Models/Review');
 const router = express.Router();
+const path = require('path');
+
+router.get('/main', async(req, res) => {
+    res.sendFile(path.join(__dirname, '../Public/Mainpage/mainpage.html'));
+})
 
 router.get('/books', async (req, res) => {
     try {
@@ -19,7 +24,12 @@ router.get('/books', async (req, res) => {
     }
 });
 
-router.get('/books/:id', async (req, res) => {
+router.get('/main/books', (req, res) => {
+    res.sendFile(path.join(__dirname, '../Public/Mainpage/book-details.html'));
+});
+
+
+router.get('/api/book-details/:id', async (req, res) => {
     try {
         const id = req.params.id;
         const book = await Book.findById(id).populate('review').exec();

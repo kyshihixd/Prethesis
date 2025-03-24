@@ -2,9 +2,9 @@ const express = require('express');
 const User = require('../Server/Models/User');
 const bcrypt = require('bcrypt');
 const router = express.Router();
+const path = require('path');
 
-
-router.post('/submitUser', async (req, res) => {
+router.post('/Registration', async (req, res) => {
     try {
         const { username, password } = req.body;
         const existingUser = await User.findOne({ username });

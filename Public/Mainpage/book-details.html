@@ -31,14 +31,14 @@
 
             const urlParams = new URLSearchParams(window.location.search);
             const bookId = urlParams.get('id');
-            console.log(bookId);
+            
             if (!bookId) {
                 bookInfo.innerHTML = "<p>Book ID not found in URL.</p>";
                 return;
             }
 
             try {
-                const response = await fetch(`/books/${bookId}`);
+                const response = await fetch(`/api/book-details/${bookId}`);
                 if (!response.ok) throw new Error("Failed to fetch book details");
 
                 const book = await response.json();
