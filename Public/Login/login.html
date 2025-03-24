@@ -68,14 +68,14 @@
             };
 
             try {
-                const response = await fetch("/LoginUser", {
+                const response = await fetch("/Login", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(formData),
                 });
 
                 if (response.ok) {
-                    document.location = '/books';
+                    document.location = '/main';
                 } else {
                     alert("Failed to login.");
                 }
