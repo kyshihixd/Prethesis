@@ -28,13 +28,16 @@ router.get('/main/books', (req, res) => {
     res.sendFile(path.join(__dirname, '../Public/Mainpage/book-details.html'));
 });
 
+router.get('/main/post', (req, res) => {
+    res.sendFile(path.join(__dirname, '../Public/Mainpage/Post.html'));
+});
 
 router.get('/api/book-details/:id', async (req, res) => {
     try {
         const id = req.params.id;
         const book = await Book.findById(id).populate('review').exec();
         
-        console.log(JSON.stringify(book, null, 2));
+        
         res.json(book);
     } catch (err) {
         console.error("Error fetching books:", err);

@@ -23,6 +23,10 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Review",
     }],
+    comment: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Comment",
+    }]
 });
 
 const Usertest = mongoose.model("User", userSchema);

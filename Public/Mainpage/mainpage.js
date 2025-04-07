@@ -18,9 +18,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             
 
             let reviewContent = "";
+            let voteCount = 0;
             if (book.review.length > 0){
                 for (let i = 0; i < book.review.length; i++){
                     reviewContent += book.review[i].content + "";
+                    voteCount += book.review[i].upvote.length - book.review[i].downvote.length;
                 }
             }
             else {reviewContent = "No content"};
@@ -30,8 +32,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                     <div class = "card-body">
                         <h3>${book.title}</h3>
                         <p><strong>Author:</strong> ${book.author ? book.author.name : "Unknown"}</p>
-                        <p><strong>Review:</strong> ${reviewContent}</p>
-                        
+                        <p><strong>Review:</strong> ${reviewContent}</p> 
+                        <p class = "mb-0 h5 text-white"><i class="bi bi-arrow-up-circle"></i>   ${voteCount}   <i class="bi bi-arrow-down-circle"></i></p>
                     </div>
                 </div>
             `;
