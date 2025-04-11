@@ -21,6 +21,10 @@ const reviewSchema = new mongoose.Schema({
         min: 0,
         max: 10,
     },
+    head:{
+        type: String,
+        required: true,
+    },
     content: {
         type: String,
         required: true,

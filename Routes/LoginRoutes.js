@@ -5,7 +5,6 @@ const router = express.Router();
 const path = require('path');
 
 router.get('/Login', (req, res) => {
-    console.log(path.join(__dirname, '../Public/Login/login.html'));
     res.sendFile(path.join(__dirname, '../Public/Login/login.html'));
 });
 
