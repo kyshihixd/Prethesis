@@ -83,6 +83,7 @@
             border: 1px solid #495057;
         }
     </style>
+    <script src="/scripts/persistUsername.js"></script>
 </head>
 
 <body class="bg-dark text-light">
@@ -90,7 +91,7 @@
         <div class="container-fluid col-8">
 
             <div class="col-6">
-                <a class="col-6 navbar-brand d-flex align-items-center ms-3" href="/main">
+                <a id="logoMain" class="col-6 navbar-brand d-flex align-items-center ms-3" href="">
                     <img src="/images/Untitled_design-removebg-preview1.png" alt="Logo"
                         class="img-fluid custom-logo me-3 object-fit-cover" />
                     Book Reviews
@@ -116,7 +117,7 @@
                     </a>
                 </li>
                 <li class="nav-item d-flex align-items-center">
-                    <a class="nav-link d-flex align-items-center" href="#">
+                    <a id="createReview" class="nav-link d-flex align-items-center" href="#">
                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
                             class="bi bi-plus-lg me-2" viewBox="0 0 16 16">
                             <path fill-rule="evenodd"
@@ -173,23 +174,32 @@
                     Create review
                 </h2>
 
-                <form>
+                <form id="createReviewForm">
                     <div class="mb-3">
-                      <label for="exampleInputEmail1" class="form-label">Bookname</label>
-                      <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                        <label for="bookname" class="form-label">Bookname</label>
+                        <input type="text" class="form-control" id="bookname">
                     </div>
                     <div class="mb-3">
-                      <label for="exampleInputPassword1" class="form-label">Author</label>
-                      <input type="password" class="form-control" id="exampleInputPassword1">
+                        <label for="author" class="form-label">Author</label>
+                        <input type="text" class="form-control" id="author">
                     </div>
                     <div class="mb-3">
-                        <label for="exampleFormControlTextarea1" class="form-label">Your review</label>
-                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="8"></textarea>
-                      </div>
+                        <label for="rating">Rating</label>
+                        <input type="number" class="form-control" id="rating" min="0" max="100">
+                    </div>
+                    <div class="mb-3">
+                        <label for="reviewTitle">Review Title</label>
+                        <input type="text" class="form-control" id="reviewTitle">
+                    </div>
+                    <div class="mb-3">
+                        <label for="userReview" class="form-label">Your review</label>
+                        <textarea class="form-control" id="userReview" rows="8"></textarea>
+                    </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
-                  </form>
-
-
+                    <p id="errorMessage" class="text-danger text-center mt-3" style="display: none;">An error occurred.
+                    </p>
+                </form>
+                <script src="/Mainpage/Post.js"></script>
             </div>
         </div>
 
@@ -200,7 +210,6 @@
             <p class="mb-0">&copy; 2025 Book Reviews. All rights reserved.</p>
         </footer>
     </div>
-    <script src="/Mainpage/Post.js"></script>
 </body>
 
 </html>

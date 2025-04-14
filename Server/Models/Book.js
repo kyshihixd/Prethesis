@@ -5,6 +5,7 @@ const bookSchema = new mongoose.Schema({
     review: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Review",
+        default: [],
     }],
     author: [{
         type: mongoose.Schema.Types.ObjectId,

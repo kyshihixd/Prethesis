@@ -6,6 +6,8 @@ const userRoutes = require('../Routes/UserRoutes');
 const loginRoutes = require('../Routes/LoginRoutes');
 const mainRoutes = require('../Routes/mainRoutes');
 const path = require('path');
+const session = require('express-session');
+require('dotenv').config();
 
 const app = express();
 const port = 3000;
@@ -15,9 +17,15 @@ app.use(express.json());
 app.use(cors());
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../Public/Registration/registration.html'));
-    console.log(path.join(__dirname, '../Public/Registration/registration.html'))
 });
 
+
+app.use(session({
+    secret: process.env.SESSION_KEY,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false }
+}));
 
 connectDB();
 

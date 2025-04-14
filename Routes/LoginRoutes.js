@@ -14,6 +14,8 @@ router.post('/Login', async (req, res) => {
         const existingUser = await User.findOne({ username });
         if (existingUser) {
             const match = await bcrypt.compare(password, existingUser.password);
+            req.session.userId = existingUser._id;
+            req.session.username = existingUser.username;
             if (match === true) {
                 res.status(201).send("Correct credential, logging in");
             }
@@ -26,5 +28,11 @@ router.post('/Login', async (req, res) => {
         console.error('Error saving user data:', err);
         res.status(500).send(`failed`);
     }
+});
+
+router.get('/logout', (req, res) => {
+    req.session.destroy(() => {
+        res.redirect('/Login'); // or send a JSON response
+    });
 });
 module.exports = router;

@@ -4,6 +4,7 @@ const reviewSchema = new mongoose.Schema({
     comment: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Comment",
+        default: [],
     }],
     book: {
         type: mongoose.Schema.Types.ObjectId,
@@ -19,7 +20,7 @@ const reviewSchema = new mongoose.Schema({
         type: Number,
         required: true,
         min: 0,
-        max: 10,
+        max: 100,
     },
     head:{
         type: String,
@@ -36,10 +37,12 @@ const reviewSchema = new mongoose.Schema({
     upvote: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
+        default: []
     }],
     downvote: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
+        default: []
     }]
 });
 

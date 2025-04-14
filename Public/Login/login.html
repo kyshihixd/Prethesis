@@ -36,7 +36,7 @@
 
 
                         <button type="submit" class="btn btn-primary w-100">Login</button>
-
+                        <p id="errorMessage" class="text-danger text-center mt-3" style="display: none;">Invalid username or password. Please try again.</p>
                         <p class="mt-3 text-center">Don't have an account? <a href="#" id = "registrationLink">Sign-up here</a></p>
 
                         
@@ -75,9 +75,10 @@
                 });
 
                 if (response.ok) {
-                    document.location = '/main';
+                    const username = document.getElementById("username").value;
+                    window.location.href = `/main?user=${username}`;
                 } else {
-                    alert("Failed to login.");
+                    document.getElementById("errorMessage").style.display = "block";
                 }
             } catch (err) {
                 console.error("Error:", err);
