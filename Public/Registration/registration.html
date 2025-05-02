@@ -66,11 +66,11 @@
                     if (response.ok) {
                         alert("User data saved successfully!");
                     } else {
-                        alert("Failed to save user data.");
+                        alert("Username already taken");
                     }
                 } catch (err) {
                     console.error("Error:", err);
-                    alert("An error occurred while saving user data.");
+                    alert(err);
                 }
             });
         document.getElementById("loginLink").addEventListener("click", (e) => {

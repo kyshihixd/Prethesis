@@ -26,6 +26,12 @@ const userSchema = new mongoose.Schema({
     comment: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Comment",
+    }],
+    
+    bookToTrade: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Book",
+        default: [],
     }]
 });
 

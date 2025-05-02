@@ -15,3 +15,15 @@ trending:
 Author:
 Book:
 Following: Display all following books/ author/ users
+
+display book/ book cover using path
+
+display trading book
+
+
+report:
+
+intro
+
+literature reivew
+

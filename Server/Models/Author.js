@@ -5,6 +5,7 @@ const authorSchema = new mongoose.Schema({
     book: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Book",
+        default: [],
     }],
     bio: {
         type: String,
@@ -30,7 +31,6 @@ const authorSchema = new mongoose.Schema({
     },
     genre :[{
         type: String,
-        enum: genres,
     }],
     
 });

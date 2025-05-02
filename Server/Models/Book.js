@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
-const genres = [];
-const language = [];
+
 const bookSchema = new mongoose.Schema({
     review: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -10,6 +9,7 @@ const bookSchema = new mongoose.Schema({
     author: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Author",
+        default: [],
     }],
     title: {
         type: String,
@@ -18,7 +18,7 @@ const bookSchema = new mongoose.Schema({
 
     description: {
         type: String,
-        required: true,
+        
     },
     createdAt: {
         type: Date,
@@ -39,7 +39,7 @@ const bookSchema = new mongoose.Schema({
     },
     genre :[{
         type: String,
-        enum: genres,
+        
     }],
     publisher: {
         type: String,
@@ -50,14 +50,22 @@ const bookSchema = new mongoose.Schema({
     },
     Language: {
         type: String,
-        enum: language,
         default: "English",
     },
     illustrator: [{
         type: String,
         default: "none",
-    }]
-
+    }],
+    usersTradingThisBook: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        default: [],
+    }],
+    
+    coverImagePath: {
+        type: String,
+        default: "/images/bookcover/default.jpg",
+    },
 });
 
 module.exports = mongoose.model('Book', bookSchema);

@@ -83,7 +83,59 @@
             border: 1px solid #495057;
         }
     </style>
-    <script src="/scripts/persistUsername.js"></script>
+    <script>
+            document.getElementById("createReviewForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const params = new URLSearchParams(window.location.search);
+        const username = params.get("user");
+        localStorage.setItem("username", username);
+        const formData = {
+            
+            bookname: document.getElementById("bookname").value,
+            author: document.getElementById("author").value,
+            title: document.getElementById("reviewTitle").value,
+            rating: document.getElementById("rating").value,
+            review: document.getElementById("userReview").value,
+            username: username,
+        };
+
+        try {
+            const response = await fetch("/main/post", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+                window.location.href = `/main?user=${username}`;
+            } else {
+                const errText = await response.text();
+                console.error("Server responded with:", errText);
+                document.getElementById("errorMessage").style.display = "block";
+            }
+        } catch (err) {
+            console.error("Error:", err);
+            document.getElementById("errorMessage").style.display = "block";
+            alert("An error occurred.");
+        }
+    });
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const params = new URLSearchParams(window.location.search);
+        const username = params.get("user");
+
+        if (username) {
+            const logoLink = document.getElementById("logoMain");
+            const createReview = document.getElementById("createReview");
+
+            if (logoLink && createReview) {
+                createReview.href = `/main/post?user=${encodeURIComponent(username)}`;
+                logoLink.href = `/main?user=${encodeURIComponent(username)}`;
+            }
+        }
+    });
+    </script>
 </head>
 
 <body class="bg-dark text-light">
@@ -142,25 +194,35 @@
 
     <div class="container-fluid row d-flex vh-100 g-0 ">
         <div class="col-2 sidebar border-end g-0">
-            <ul class="list-unstyled m-0 w-100">
+            <ul class="list-unstyled w-100">
                 <li class="m-3 " style="border-radius: 15px;">
-                    <a href="#" class="text-white text-decoration-none d-block  rounded hover-bg">
+                    <a id = "mainPage" href="" class="text-white text-decoration-none d-block  rounded hover-bg text-nowrap">
                         <i class="fas fa-home me-2"></i> Home
                     </a>
                 </li>
                 <li class=" m-3 " style="border-radius: 15px;">
-                    <a href="#" class="text-white text-decoration-none d-block  rounded hover-bg">
-                        <i class="fas fa-book me-2"></i> Reviews
+                    <a href="#" class="text-white text-decoration-none d-block  rounded hover-bg text-nowrap">
+                        <i class="bi bi-radar me-2"></i> Discovery
                     </a>
                 </li>
                 <li class=" m-3" style="border-radius: 15px;">
-                    <a href="#" class="text-white text-decoration-none d-block rounded hover-bg">
-                        <i class="fas fa-list me-2"></i> Categories
+                    <a href="#" class="text-white text-decoration-none d-block rounded hover-bg text-nowrap">
+                        <i class="bi bi-graph-up me-2"></i> Trending
                     </a>
                 </li>
                 <li class="m-3 " style="border-radius: 15px;">
-                    <a href="#" class="text-white text-decoration-none d-block  rounded hover-bg ">
-                        <i class="fas fa-envelope me-2"></i> Contact
+                    <a href="#" class="text-white text-decoration-none d-block  rounded hover-bg text-nowrap">
+                        <i class="bi bi-book me-2"></i> Books
+                    </a>
+                </li>
+                <li class="m-3 " style="border-radius: 15px;">
+                    <a href="#" class="text-white text-decoration-none d-block  rounded hover-bg text-nowrap">
+                        <i class="bi bi-people me-2"></i> Authors
+                    </a>
+                </li>
+                <li class="m-3 " style="border-radius: 15px;">
+                    <a href="#" class="text-white text-decoration-none d-block  rounded hover-bg text-nowrap">
+                        <i class="bi bi-wechat me-2"></i> Following
                     </a>
                 </li>
             </ul>
@@ -206,9 +268,7 @@
         <div class="col-2">
 
         </div>
-        <footer class="bg-secondary text-white text-center py-2">
-            <p class="mb-0">&copy; 2025 Book Reviews. All rights reserved.</p>
-        </footer>
+        
     </div>
 </body>
 

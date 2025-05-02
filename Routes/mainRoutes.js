@@ -1,11 +1,24 @@
 const express = require('express');
-const Book = require('../Server/Models/Book'); 
+const Book = require('../Server/Models/Book');
 const Review = require('../Server/Models/Review');
 const User = require('../Server/Models/User');
 const Author = require('../Server/Models/Author');
+const Comment = require('../Server/Models/Comment');
 const router = express.Router();
 const path = require('path');
 const session = require('express-session');
+const multer = require("multer");
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, path.join(__dirname, '../Public/images/bookcover'));
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+        cb(null, uniqueSuffix + path.extname(file.originalname));
+    }
+});
+const upload = multer({ storage });
 
 function isAuthenticated(req, res, next) {
     if (req.session && req.session.userId) {
@@ -28,9 +41,8 @@ router.get('/books', isAuthenticated, async (req, res) => {
                 return await Book.findById(book._id).populate('review').populate('author').exec();
             })
         );
-        
 
-        console.log(JSON.stringify(populatedBooks, null, 2));
+
         res.json(populatedBooks);
     } catch (err) {
         console.error("Error fetching books:", err);
@@ -38,15 +50,136 @@ router.get('/books', isAuthenticated, async (req, res) => {
     }
 });
 
-router.get('/main/books',isAuthenticated, (req, res) => {
+router.get('/reviews', isAuthenticated, async (req, res) => {
+    try {
+        const reviews = await Review.find();
+        var populatedReviews = await Promise.all(
+            reviews.map(async (review) => {
+                return await Review.findById(review._id).populate('comment').populate('book').populate('user').exec();
+            })
+        );
+
+
+        res.json(populatedReviews);
+    } catch (err) {
+        console.error("Error fetching books:", err);
+        res.status(500).json({ error: "Failed to fetch books" });
+    }
+});
+
+router.get('/authors', isAuthenticated, async (req, res) => {
+    try {
+        const authors = await Author.find();
+        var populatedAuthors = await Promise.all(
+            authors.map(async (author) => {
+                return await author.findById(author._id).populate('book').exec();
+            })
+        );
+
+
+        res.json(populatedAuthors);
+    } catch (err) {
+        console.error("Error fetching books:", err);
+        res.status(500).json({ error: "Failed to fetch books" });
+    }
+});
+
+
+router.get('/main/book-details', isAuthenticated, (req, res) => {
     res.sendFile(path.join(__dirname, '../Public/Mainpage/book-details.html'));
 });
 
-router.get('/main/post',isAuthenticated, (req, res) => {
-    res.sendFile(path.join(__dirname, '../Public/Mainpage/post.html'));
+router.get('/main/post-review', isAuthenticated, (req, res) => {
+    res.sendFile(path.join(__dirname, '../Public/Mainpage/postreview.html'));
 });
 
-router.post('/main/post', isAuthenticated, async (req, res) => {
+router.get('/main/post-book', isAuthenticated, (req, res) => {
+    res.sendFile(path.join(__dirname, '../Public/Mainpage/postbook.html'));
+});
+
+router.get('/main/review-details', isAuthenticated, (req, res) => {
+    res.sendFile(path.join(__dirname, '../Public/Mainpage/review-details.html'));
+});
+
+router.get('/main/books', isAuthenticated, (req, res) => {
+    res.sendFile(path.join(__dirname, '../Public/Mainpage/bookpage.html'));
+});
+
+router.get('/main/authors', isAuthenticated, (req, res) => {
+    res.sendFile(path.join(__dirname, '../Public/Mainpage/authorpage.html'));
+});
+
+router.get('/main/discovery', isAuthenticated, (req, res) => {
+    res.sendFile(path.join(__dirname, '../Public/Mainpage/discoverypage.html'));
+});
+
+router.get('/main/trending', isAuthenticated, (req, res) => {
+    res.sendFile(path.join(__dirname, '../Public/Mainpage/trendingpage.html'));
+});
+
+
+router.post('/main/post-book', isAuthenticated, upload.single("formFile"), async (req, res) => {
+    try {
+        const body = req.body || {};
+        console.log("book title: " + body.booktitle);
+        const booktitle = (body.booktitle || "").trim();
+        const author = (body.author || "").trim();
+        const pages = body.pages ? parseInt(body.pages) : undefined;
+        const isbn = (body.isbn || "").trim();
+        const publicationdate = (body.publicationdate || "").trim();
+        const publicationplace = (body.publicationplace || "").trim();
+        const genre = (body.genre || "").trim();
+        const publisher = (body.publisher || "").trim();
+        const series = (body.series || "").trim();
+        const language = (body.language || "").trim();
+        const illustrator = (body.illustrator || "").trim();
+        const description = (body.description || "").trim();
+        const username = (body.username || "");
+
+        const imagePath = req.file ? "/images/bookcover/" + req.file.filename: "/images/bookcover/default.jpg";
+        const genres = genre ? genre.split(",").map(g => g.trim()) : [];
+        const illustrators = illustrator ? illustrator.split(",").map(g => g.trim()) : [];
+        const authors = author ? author.split(",").map(g => g.trim()) : [];
+        const authorIds = await Promise.all(
+            authors.map(async name => {
+              let existing = await Author.findOne({ penname: name }).exec();
+              if (existing) return existing._id;
+      
+              const newAuthor = new Author({ penname: name });
+              await newAuthor.save();
+              return newAuthor._id;
+            })
+          );
+        
+
+        const newBook = new Book ({
+
+            title: booktitle,
+            author: authorIds,
+            pages: pages,
+            isbn: isbn,
+            publicationdate: publicationdate,
+            publicationplace: publicationplace,
+            genre: genres,
+            publisher: publisher,
+            series: series,
+            language: language,
+            illustrator: illustrators,
+            description: description,
+            coverImagePath: imagePath,
+        });
+
+        await newBook.save();
+        console.log("Book created:", newBook);
+
+        res.status(200).send("Book posted successfully.");
+    } catch (err) {
+        console.error('Error saving user data:', err);
+        res.status(500).send(`failed`);
+    }
+});
+
+router.post('/main/post-review', isAuthenticated, async (req, res) => {
     try {
         const { bookname, author, title, rating, review, username } = req.body;
 
@@ -56,11 +189,11 @@ router.post('/main/post', isAuthenticated, async (req, res) => {
         const book = await Book.findOne({
             title: { $regex: new RegExp(`^${normalizedBookname}$`, 'i') },
         })
-        .populate({
-            path: 'author',
-            match: { penname: { $regex: new RegExp(`^${normalizedAuthor}$`, 'i') } }
-        })
-        .exec();
+            .populate({
+                path: 'author',
+                match: { penname: { $regex: new RegExp(`^${normalizedAuthor}$`, 'i') } }
+            })
+            .exec();
 
         const user = await User.findOne({ username }).exec();
 
@@ -68,7 +201,7 @@ router.post('/main/post', isAuthenticated, async (req, res) => {
             return res.status(500).send("Failed to find matching book, author, or user.");
         }
 
-        console.log("at routes")
+
         const newReview = new Review({
             book: book._id,
             user: user._id,
@@ -76,7 +209,7 @@ router.post('/main/post', isAuthenticated, async (req, res) => {
             head: title,
             content: review
         });
-        
+
         await newReview.save();
         res.status(201).send('Review created successfully!');
 
@@ -94,15 +227,63 @@ router.post('/main/post', isAuthenticated, async (req, res) => {
     } catch (err) {
         console.error('Error saving user data:', err);
         res.status(500).send(`failed`);
+    }
+});
+
+router.post('/user/bookToTrade', isAuthenticated, async (req, res) => {
+    try {
+        const { bookname, author, username } = req.body;
+
+        const user = await User.findOne({ username }).exec();
+        if (!user) return res.status(404).send("User not found.");
+
+        if (!Array.isArray(bookname) || !Array.isArray(author) || bookname.length !== author.length) {
+            return res.status(400).send("Bookname and author must be arrays of the same length.");
         }
-    });
+
+        for (let i = 0; i < bookname.length; i++) {
+            const normalizedBookname = bookname[i].trim().toLowerCase();
+            const normalizedAuthor = author[i].trim().toLowerCase();
+
+            const book = await Book.findOne({
+                title: { $regex: new RegExp(`^${normalizedBookname}$`, 'i') },
+            })
+                .populate({
+                    path: 'author',
+                    match: { penname: { $regex: new RegExp(`^${normalizedAuthor}$`, 'i') } }
+                })
+                .exec();
+
+            if (!book || !book.author) continue;
+
+            if (!user.bookToTrade.includes(book._id)) {
+                user.bookToTrade.push(book._id);
+            }
+
+            if (!book.usersTradingThisBook.includes(user._id)) {
+                book.usersTradingThisBook.push(user._id);
+                await book.save();
+            }
+        }
+
+        await user.save();
+        return res.status(200).send("Books added to trade list.");
+
+    } catch (err) {
+        console.error("Error updating trade list:", err);
+        return res.status(500).send("Internal server error.");
+    }
+});
+
+
+
 
 router.get('/api/book-details/:id', isAuthenticated, async (req, res) => {
     try {
         const id = req.params.id;
         const book = await Book.findById(id).populate('review').populate("author").exec();
-        
-        
+
+
         res.json(book);
     } catch (err) {
         console.error("Error fetching books:", err);
@@ -110,6 +291,18 @@ router.get('/api/book-details/:id', isAuthenticated, async (req, res) => {
     }
 });
 
+router.get('/api/review-details/:id', isAuthenticated, async (req, res) => {
+    try {
+        const id = req.params.id;
+        const review = await Review.findById(id).populate('comment').populate("book").populate("user").exec();
+
+
+        res.json(review);
+    } catch (err) {
+        console.error("Error fetching review:", err);
+        res.status(500).json({ error: "Failed to fetch review" });
+    }
+});
 
 
 module.exports = router;

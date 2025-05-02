@@ -57,6 +57,7 @@
 
                 bookInfo.innerHTML = `
                     <h2>${book.title}</h2>
+                    
                     <p><strong>Author:</strong> ${book.author[0] ? book.author[0].penname : "Unknown"}</p>
                     <p>Book description: ${book.description} </p>
                     <p>Genre: ${book.genre} </p>
@@ -67,8 +68,8 @@
                     ${reviewContent}
                 `;
             } catch (error) {
-                console.error("Error fetching book details:", error);
-                bookInfo.innerHTML = "<p>Error loading book details. Check console for details.</p>";
+                console.log("Error fetching book details:", error);
+                bookInfo.innerHTML = `<p>Error loading book details. Check console for details, ${error}.</p>`;
             }
         });
     </script>
