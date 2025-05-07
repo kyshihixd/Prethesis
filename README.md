@@ -20,6 +20,7 @@ display book/ book cover using path
 
 display trading book
 
+low prio: store all the book/review content locally, so accessing it will be easier.
 
 report:
 
