@@ -233,12 +233,14 @@
             books.forEach(book => {
                 const bookCard = document.createElement("div");
                 
-
+                if (book.coverImagePath == '/images/bookcover/undefined'){
+                    book.coverImagePath = "/images/bookcover/default.jpg";
+                }
                 bookCard.innerHTML = `
                     <div class="card mb-3 w-75 mx-auto book-card" onclick="gotobook('${book._id}')">
                         <div class="row g-0">
-                            <div class="col-md-3 d-flex align-items-center">
-                                <img src="${book.coverImagePath}" class="img-fluid rounded-start" alt="Book Cover" style="max-height: 200px; object-fit: cover;">
+                            <div class="col-md-3 d-flex justify-content-center align-items-center">
+                                <img src="${book.coverImagePath ? book.coverImagePath : "/images/bookcover/default.jpg"}" class="img-fluid rounded-start" alt="Book Cover" style="max-height: 200px; object-fit: cover;">
                             </div>
                             <div class="col-md-9">
                                 <div class="card-body">
@@ -264,6 +266,12 @@
             bookList.innerHTML = `<p>Error loading books: ${error}</p>`;
         }
     });
+    
+    function gotobook(bookId) {
+        const params = new URLSearchParams(window.location.search);
+        const username = params.get("user");
+        window.location.href = `/main/book-details?user=${username}&id=${bookId}`;
+    }
     </script>
 </body>
 

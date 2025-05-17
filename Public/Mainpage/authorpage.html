@@ -86,11 +86,14 @@
             }
         }
 
-        .book-card {
+        .author-card {
             animation: fadeIn 0.5s ease-in-out;
+            
+            min-height: 150px;
+            max-height: 250px;
         }
 
-        .book-card {
+        .author-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             background-color: #343a40;
             border: 1px solid #495057;
@@ -214,6 +217,71 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src = "/scripts/pathing.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const authorList = document.getElementById("author-list");
+        
+            try {
+                const response = await fetch("/authors");  
+                if (!response.ok) throw new Error("Failed to fetch authors");
+        
+                const authors = await response.json();
+        
+                if (authors.length === 0) {
+                    authorList.innerHTML = "<p>No authors found.</p>";
+                    return;
+                }
+        
+                for (let i = 0; i < authors.length; i += 2) {
+                    const row = document.createElement("div");
+                    row.className = "row mb-4 w-75";
+        
+                    for (let j = i; j < i + 2 && j < authors.length; j++) {
+                        const author = authors[j];
+        
+                        const col = document.createElement("div");
+                        col.className = "col-md-6";
+        
+                        col.innerHTML = `
+                            <div class="card author-card mx-auto" onclick="gotoauthor('${author._id}')">
+                                <div class="row g-0">
+                                    <!-- Left Column: Cover Image -->
+                                    <div class="col-md-4 d-flex justify-content-center align-items-center p-2">
+                                        <img src="${author.coverImagePath || "/images/author/default.jpg"}"
+                                            class="img-fluid rounded"
+                                            alt="Author Photo"
+                                            style="min-height: 150px; object-fit: cover;">
+                                    </div>
+
+                                    <!-- Right Column: Author Info -->
+                                    <div class="col-md-6 d-flex flex-column justify-content-center p-3">
+                                        <div class="card-body p-0">
+                                            <h3 class="card-text mb-2">${author.penname || "Unnamed Author"}</h3>
+                                            <p class="card-text small">${author.bio || "No bio available."}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+        
+                        row.appendChild(col);
+                    }
+        
+                    authorList.appendChild(row);
+                }
+            } catch (error) {
+                console.error("Error fetching authors:", error);
+                authorList.innerHTML = `<p>Error loading authors: ${error}</p>`;
+            }
+        });
+
+    function gotoauthor(authorId) {
+        const params = new URLSearchParams(window.location.search);
+        const username = params.get("user");
+        window.location.href = `/main/author-details?user=${username}&id=${authorId}`;
+    }
+        </script>
+        
 </body>
 
 </html>

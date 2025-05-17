@@ -32,7 +32,10 @@ const authorSchema = new mongoose.Schema({
     genre :[{
         type: String,
     }],
-    
+    coverImagePath: {
+        type: String,
+        default: "/images/authorcover/default.jpg",
+    },
 });
 
 module.exports = mongoose.model('Author', authorSchema);

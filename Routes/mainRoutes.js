@@ -9,7 +9,7 @@ const path = require('path');
 const session = require('express-session');
 const multer = require("multer");
 
-const storage = multer.diskStorage({
+const storageBook = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, path.join(__dirname, '../Public/images/bookcover'));
     },
@@ -18,7 +18,19 @@ const storage = multer.diskStorage({
         cb(null, uniqueSuffix + path.extname(file.originalname));
     }
 });
-const upload = multer({ storage });
+const uploadBook = multer({ storage: storageBook });
+
+const storageAuthor = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, path.join(__dirname, '../Public/images/authorcover'));
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+        cb(null, uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+const uploadAuthor= multer({ storage: storageAuthor });
 
 function isAuthenticated(req, res, next) {
     if (req.session && req.session.userId) {
@@ -72,7 +84,7 @@ router.get('/authors', isAuthenticated, async (req, res) => {
         const authors = await Author.find();
         var populatedAuthors = await Promise.all(
             authors.map(async (author) => {
-                return await author.findById(author._id).populate('book').exec();
+                return await Author.findById(author._id).populate('book').exec();
             })
         );
 
@@ -101,6 +113,10 @@ router.get('/main/review-details', isAuthenticated, (req, res) => {
     res.sendFile(path.join(__dirname, '../Public/Mainpage/review-details.html'));
 });
 
+router.get('/main/author-details', isAuthenticated, (req, res) => {
+    res.sendFile(path.join(__dirname, '../Public/Mainpage/author-details.html'));
+});
+
 router.get('/main/books', isAuthenticated, (req, res) => {
     res.sendFile(path.join(__dirname, '../Public/Mainpage/bookpage.html'));
 });
@@ -117,8 +133,12 @@ router.get('/main/trending', isAuthenticated, (req, res) => {
     res.sendFile(path.join(__dirname, '../Public/Mainpage/trendingpage.html'));
 });
 
+router.get('/main/author-edit', isAuthenticated, (req, res) => {
+    res.sendFile(path.join(__dirname, '../Public/Mainpage/author-edit.html'));
+});
 
-router.post('/main/post-book', isAuthenticated, upload.single("formFile"), async (req, res) => {
+
+router.post('/main/post-book', isAuthenticated, uploadBook.single("formFile"), async (req, res) => {
     try {
         const body = req.body || {};
         console.log("book title: " + body.booktitle);
@@ -171,6 +191,12 @@ router.post('/main/post-book', isAuthenticated, upload.single("formFile"), async
 
         await newBook.save();
         console.log("Book created:", newBook);
+
+        await Promise.all(
+            authorIds.map(async authorId => {
+                await Author.findByIdAndUpdate(authorId, { $push: { book: newBook._id } }, {new: true});
+            })
+        );
 
         res.status(200).send("Book posted successfully.");
     } catch (err) {
@@ -304,5 +330,21 @@ router.get('/api/review-details/:id', isAuthenticated, async (req, res) => {
     }
 });
 
+router.get('/api/author-details/:id', isAuthenticated, async (req, res) => {
+    try {
+        const id = req.params.id;
+        const author = await Author.findById(id).populate("book").exec();
+        
 
+        res.json(author);
+    } catch (err) {
+        console.error("Error fetching review:", err);
+        res.status(500).json({ error: "Failed to fetch review" });
+    }
+});
+
+
+router.put('/api/author-edit/:id', isAuthenticated, async (req, res) => {
+
+})
 module.exports = router;

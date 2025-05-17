@@ -12,23 +12,25 @@ router.post('/Login', async (req, res) => {
     try {
         const { username, password } = req.body;
         const existingUser = await User.findOne({ username });
-        if (existingUser) {
-            const match = await bcrypt.compare(password, existingUser.password);
-            req.session.userId = existingUser._id;
-            req.session.username = existingUser.username;
-            if (match === true) {
-                res.status(201).send("Correct credential, logging in");
-            }
-        }
-        else {
-            res.status(500).send(`Incorrect username or password`);
+
+        if (!existingUser) {
+            return res.status(401).send("Incorrect username or password");
         }
 
+        const match = await bcrypt.compare(password, existingUser.password);
+        if (match) {
+            req.session.userId = existingUser._id;
+            req.session.username = existingUser.username;
+            return res.status(201).send("Correct credential, logging in");
+        } else {
+            return res.status(401).send("Incorrect username or password");
+        }
     } catch (err) {
         console.error('Error saving user data:', err);
-        res.status(500).send(`failed`);
+        res.status(500).send("Server error");
     }
 });
+
 
 router.get('/logout', (req, res) => {
     req.session.destroy(() => {

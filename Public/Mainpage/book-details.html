@@ -1,29 +1,220 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Details</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <title>Book Review Forum</title>
+
     <style>
+        p,span,h1,h2,h4,h5,h3,li {
+            color: white;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            background-color: #2c3e50;
+            border-top: 1px solid #495057;
+        }
+
         body {
             font-family: "Poppins", sans-serif;
-            background-color: #1a1a1a;
+            background: linear-gradient(to bottom, #1a1a1a, #2c3e50);
+            background-attachment: fixed;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 56px;
+            bottom: 0;
+            left: 0;
+            width: 16.666%;
+            overflow-y: auto;
+            z-index: 1030;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1040;
+        }
+
+        .main-content {
+            margin-top: 56px;
+            margin-left: 16.666%;
+            padding: 1rem;
+        }
+
+
+        .sidebar a {
+            transition: color 0.3s ease, background-color 0.3s ease;
+            padding: 10px;
+            width: 50%;
+            border-radius: 5px;
+        }
+
+        .sidebar li:hover {
+            color: #fff;
+            background-color: #34495e;
+        }
+
+        .custom-logo {
+            width: 35px;
+            height: auto;
+        }
+
+        a {
             color: aliceblue;
-            padding: 20px;
         }
-        .book-details {
-            max-width: 800px;
-            margin: 0 auto;
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
+
+        .book-card {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .book-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-color: #343a40;
+            border: 1px solid #495057;
+        }
+
+        #mainPageBar {
+            color: #fff;
+            background-color: #34495e;
+        }
+
+        #review-info {
+            display: flex;
+            justify-content: center;
+            align-items: start;
+            padding-top: 2rem;
+}
     </style>
+    <script src="/scripts/persistUsername.js"></script>
 </head>
-<body>
-    <div class="book-details">
-        <h1>Book Details</h1>
-        <div id="book-info">
+
+<body class="bg-dark text-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary border-bottom">
+        <div class="container-fluid col-8">
+
+            <div class="col-6">
+                <a id = "logoMain" class="col-6 navbar-brand d-flex align-items-center ms-3" href="/main">
+                    <img src="/images/Untitled_design-removebg-preview1.png" alt="Logo"
+                        class="img-fluid custom-logo me-3 object-fit-cover" />
+                    Book Reviews
+                </a>
+            </div>
+
+            <div class="col-6 align-item-center justify-content-center d-flex">
+                <form class="d-flex col-8">
+                    <input class="form-control me-2" type="search" placeholder="Search books..." aria-label="Search">
+                </form>
+            </div>
+
         </div>
+        <div class="mx-4 col-3 collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav gap-4">
+                <li class="nav-item d-flex align-items-center">
+                    <a class="nav-link d-flex align-items-center" href="#">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
+                            class="bi bi-bell" viewBox="0 0 16 16">
+                            <path
+                                d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2M8 1.918l-.797.161A4 4 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4 4 0 0 0-3.203-3.92zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5 5 0 0 1 13 6c0 .88.32 4.2 1.22 6" />
+                        </svg>
+                    </a>
+                </li>
+                <li class="nav-item d-flex align-items-center">
+                    <a id = "createReview" class="nav-link d-flex align-items-center" href="#">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
+                            class="bi bi-plus-lg me-2" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                                d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
+                        </svg>
+                        <div >Create</div>
+                    </a>
+                </li>
+                <li class="nav-item d-flex align-items-center">
+                    <a class="nav-link d-flex align-items-center" href="#">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                          </svg>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container-fluid g-0 ">
+        <div class="row">
+            <div class = "col-2 sidebar border-end mt-2 g-0">
+                <ul class="list-unstyled w-100">
+                    <li class="m-3 " style="border-radius: 15px;" id ="mainPageBar">
+                        <a id = "mainPage" href="" class="text-white text-decoration-none d-block  rounded text-nowrap">
+                            <i class="fas fa-home me-2"></i> Home
+                        </a>
+                    </li>
+                    <li class=" m-3 " style="border-radius: 15px;" id = "discoveryPageBar">
+                        <a href="#" id = "discoverypage" class="text-white text-decoration-none d-block  rounded hover-bg text-nowrap">
+                            <i class="bi bi-radar me-2"></i> Discovery
+                        </a>
+                    </li>
+                    <li class=" m-3" style="border-radius: 15px;" id = "trendingPageBar">
+                        <a href="#" id = "trendingpage" class="text-white text-decoration-none d-block rounded hover-bg text-nowrap">
+                            <i class="bi bi-graph-up me-2"></i> Trending
+                        </a>
+                    </li>
+                    <li class="m-3 " style="border-radius: 15px;" id = "bookPageBar">
+                        <a href="#" id = "bookpage" class="text-white text-decoration-none d-block  rounded hover-bg text-nowrap">
+                            <i class="bi bi-book me-2"></i> Books
+                        </a>
+                    </li>
+                    <li class="m-3 " style="border-radius: 15px;" id="authorPageBar">
+                        <a href="#" id="authorpage" class="text-white text-decoration-none d-block  rounded hover-bg text-nowrap">
+                            <i class="bi bi-people me-2"></i> Authors
+                        </a>
+                    </li>
+                    <li class="m-3 " style="border-radius: 15px;" id = "followingPageBar">
+                        <a href="#" id = "followingpage" class="text-white text-decoration-none d-block  rounded hover-bg text-nowrap">
+                            <i class="bi bi-wechat me-2"></i> Following
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+
+
+        <div class="mt-3 col main-content">
+
+            <div id="book-info" class = "m-0 mt-3 p-0 row justify-content-center">
+
+            </div>
+        </div>
+
+        <div class="col-2">
+
+        </div>
+        
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
@@ -56,17 +247,45 @@
                 }
 
                 bookInfo.innerHTML = `
-                    <h2>${book.title}</h2>
-                    
-                    <p><strong>Author:</strong> ${book.author[0] ? book.author[0].penname : "Unknown"}</p>
-                    <p>Book description: ${book.description} </p>
-                    <p>Genre: ${book.genre} </p>
-                    <p>Pages: ${book.pages} </p>
-                    <p>Languages: ${book.Language} </p>
-                    <p>ISBN: ${book.isbn} </p>
-                    <h3>Review: (Rating: ${rating})</h3>
-                    ${reviewContent}
+                    <div class="card book-card p-4 mt-5 w-100" style="max-width: 700px;">
+                        <div class="text-center mb-4">
+                            <img src="${book.coverImagePath || '/images/bookcover/default.jpg'}"
+                                class="rounded mx-auto d-block mb-3"
+                                alt="Book Cover"
+                                style="width: 200px; height: 250px; object-fit: cover;">
+                        </div>
+
+                        <h2 class="text-center mb-3">${book.title || "Untitled"}</h2>
+                        
+                        <div class="text-center text-muted mb-4">
+                            <p><strong>Author(s):</strong> ${book.author && book.author.length > 0 ? book.author.map(a => a.penname).join(", ") : "Unknown"}</p>
+                        </div>
+
+                        <div class="mb-3">
+                            <p><strong>Description:</strong><br>${book.description || "No description provided."}</p>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Pages:</strong> ${book.pages || "Not specified"}</p>
+                                <p><strong>ISBN:</strong> ${book.isbn || "Not specified"}</p>
+                                <p><strong>Publication Date:</strong> ${book.publication_date ? new Date(book.publication_date).toLocaleDateString() : "Not specified"}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Publication Place:</strong> ${book.publication_place || "Not specified"}</p>
+                                <p><strong>Publisher:</strong> ${book.publisher || "Not specified"}</p>
+                                <p><strong>Series:</strong> ${book.series || "None"}</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <p><strong>Language:</strong> ${book.Language || "Not specified"}</p>
+                            <p><strong>Genres:</strong> ${book.genre && book.genre.length > 0 ? book.genre.join(", ") : "Not specified"}</p>
+                            <p><strong>Illustrator(s):</strong> ${book.illustrator && book.illustrator.length > 0 ? book.illustrator.join(", ") : "None"}</p>
+                        </div>
+                    </div>
                 `;
+
             } catch (error) {
                 console.log("Error fetching book details:", error);
                 bookInfo.innerHTML = `<p>Error loading book details. Check console for details, ${error}.</p>`;

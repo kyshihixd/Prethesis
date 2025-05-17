@@ -23,8 +23,7 @@ display trading book
 low prio: store all the book/review content locally, so accessing it will be easier.
 
 report:
-
 intro
-
 literature reivew
 
+Add more info relate work: mongodb sql, nodejs - bootstrap - database, add more to intro

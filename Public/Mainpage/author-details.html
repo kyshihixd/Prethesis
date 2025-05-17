@@ -12,7 +12,7 @@
     <title>Book Review Forum</title>
 
     <style>
-        p,span,h1,h2,h4,h5,h3 {
+        p,span,h1,h2,h4,h5,h3,li {
             color: white;
         }
 
@@ -204,7 +204,8 @@
 
         <div class="mt-3 col main-content">
 
-            <div id="review-info" class = "m-0 p-0 row justify-content-center">
+            <div id="author-info" class = "m-0 mt-3 p-0 row justify-content-center">
+
             </div>
         </div>
 
@@ -216,32 +217,69 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
-            const reviewInfo = document.getElementById("review-info");
+            const authorInfo = document.getElementById("author-info");
 
             const urlParams = new URLSearchParams(window.location.search);
-            const reviewId = urlParams.get('id');
+            const authorId = urlParams.get('id');
             
-            if (!reviewId) {
-                reviewInfo.innerHTML = "<p>Review ID not found in URL.</p>";
+            if (!authorId) {
+                authorInfo.innerHTML = "<p>Author ID not found in URL.</p>";
                 return;
             }
 
             try {
-                const response = await fetch(`/api/review-details/${reviewId}`);
-                if (!response.ok) throw new Error("Failed to fetch review details");
+                const response = await fetch(`/api/author-details/${authorId}`);
+                if (!response.ok) throw new Error("Failed to fetch author details");
 
-                const review = await response.json();
-                console.log("Fetched review:", review);
+                const author = await response.json();
+                console.log("Fetched author:", author);
 
                 
-                reviewInfo.innerHTML = `
-                    <div class="card book-card p-3 mt-5 w-100" style="max-width: 700px;">
-                        <span><h3 style="display:inline;">${review.head}</h3> &emsp; &emsp; By user: ${review.user.username}</span>
+                authorInfo.innerHTML = `
+                    <div class="card book-card p-4 mt-5 w-100" style="max-width: 700px;">
+                        <div class="text-center">
+                            <a href="/author-edit.html?id=${author._id}" class="btn btn-warning">
+                                Edit Author Info
+                            </a>
+                        </div>
+                        <div class="text-center mb-4 mt-4">
+                            <img src="${author.coverImagePath || '/images/authorcover/default.jpg'}" 
+                                class="rounded mx-auto d-block mb-3" 
+                                alt="Author Cover" 
+                                style="width: 200px; height: 250px; object-fit: cover;">
+                        </div>
+                        
+                        <h2 class="text-center mb-3">${author.penname || "Unknown Penname"}</h2>
+                        <p class="text-center text-muted mb-4">${author.realname || ""}</p>
 
-                            <p><strong>Book:</strong> ${review.book.title}</p>
-                            <p><strong>Final Rating:</strong> ${review.rating}</p>
-                            <hr class="border-light"/>
-                            <p>${review.content}</p>
+                        <div class="mb-3">
+                            <p><strong>Biography:</strong><br>${author.bio || "No biography provided."}</p>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Date of Birth:</strong> ${author.data_of_birth ? new Date(author.data_of_birth).toLocaleDateString() : "Not provided"}</p>
+                                <p><strong>Place of Birth:</strong> ${author.place_of_birth || "Not provided"}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Occupation:</strong> ${author.occupation || "Not provided"}</p>
+                                <p><strong>Education:</strong> ${author.education || "Not provided"}</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <p><strong>Genres:</strong> ${author.genre && author.genre.length > 0 ? author.genre.join(", ") : "Not specified"}</p>
+                        </div>
+
+                        <div class="mb-3">
+                            <p><strong>Books Written:</strong></p>
+                            <ul>
+                                ${
+                                    author.book && author.book.length > 0 
+                                        ? author.book.map(b => `<li>${b.title || "Untitled"}</li>`).join("") 
+                                        : "<li>No books listed.</li>"
+                                }
+                            </ul>
                         </div>
                     </div>
                 `;
@@ -249,9 +287,10 @@
 
             } catch (error) {
                 console.log("Error fetching book details:", error);
-                reviewInfo.innerHTML = `<p>Error loading book details. Check console for details, ${error}.</p>`;
+                authorInfo.innerHTML = `<p>Error loading book details. Check console for details, ${error}.</p>`;
             }
         });
+
     </script>
     <script src = "/scripts/pathing.js"></script> 
 </body>
