@@ -238,7 +238,7 @@
                 authorInfo.innerHTML = `
                     <div class="card book-card p-4 mt-5 w-100" style="max-width: 700px;">
                         <div class="text-center">
-                            <a href="/author-edit.html?id=${author._id}" class="btn btn-warning">
+                            <a onclick="gotoAuthorEdit('${author._id}')" class="btn btn-warning">
                                 Edit Author Info
                             </a>
                         </div>
@@ -291,6 +291,11 @@
             }
         });
 
+        function gotoAuthorEdit(id){
+            const params = new URLSearchParams(window.location.search);
+            const user = params.get("user");
+            window.location.href = `/main/author-edit?user=${user}&id=${id}`
+        }
     </script>
     <script src = "/scripts/pathing.js"></script> 
 </body>

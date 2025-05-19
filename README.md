@@ -27,3 +27,7 @@ intro
 literature reivew
 
 Add more info relate work: mongodb sql, nodejs - bootstrap - database, add more to intro
+
+color - constraint adding author/book  -review at book
+
+-presentation

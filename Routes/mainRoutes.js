@@ -8,6 +8,7 @@ const router = express.Router();
 const path = require('path');
 const session = require('express-session');
 const multer = require("multer");
+const fs = require('fs');
 
 const storageBook = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -344,7 +345,42 @@ router.get('/api/author-details/:id', isAuthenticated, async (req, res) => {
 });
 
 
-router.put('/api/author-edit/:id', isAuthenticated, async (req, res) => {
+router.put('/api/author-edit/:id', isAuthenticated, uploadAuthor.single("authorCoverImagePath"), async (req, res) => {
+    try {
+        const authorId = req.params.id;
+        const author = await Author.findById(authorId);
 
+        if (!author) {
+            return res.status(404).json({ message: "Author not found" });
+        }
+
+        if (req.file) {
+            if (author.coverImagePath) {
+                const oldImagePath = path.join(__dirname, '..', 'public', author.coverImagePath);
+
+                if (fs.existsSync(oldImagePath)) {
+                    fs.unlinkSync(oldImagePath);
+                }
+            }
+
+            author.coverImagePath = `/images/authorcover/${req.file.filename}`;
+        }
+
+        author.penname = req.body.penname || author.penname;
+        author.realname = req.body.realname || author.realname;
+        author.bio = req.body.bio || author.bio;
+        author.data_of_birth = req.body.data_of_birth || author.data_of_birth;
+        author.place_of_birth = req.body.place_of_birth || author.place_of_birth;
+        author.occupation = req.body.occupation || author.occupation;
+        author.education = req.body.education || author.education;
+        author.genre = req.body.genre ? req.body.genre.split(',').map(g => g.trim()) : author.genre;
+
+        await author.save();
+
+        res.status(200).json({ message: "Author updated successfully", author });
+    } catch (error) {
+        console.error("Error updating author:", error);
+        res.status(500).json({ message: "Server error" });
+    }
 })
 module.exports = router;
