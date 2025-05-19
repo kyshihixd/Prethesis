@@ -1,5 +1,31 @@
-# Prethesis
- 
+# 📚 Prethesis - Book & Author Management Web App
+
+This project is a web application built using **Node.js**, **Express**, **MongoDB**, and **Mongoose** to manage authors, users, and books — with features like image uploading, authentication, and admin-only author editing.
+
+---
+
+## 🚀 Features
+
+- ✅ User Authentication & Authorization
+- 🛂 Admin Role Management
+- ✍️ Edit Author Details (Admin-only)
+- 🖼️ Upload Author Cover Images
+- 📖 Book Trade System (WIP)
+- 💬 Comments and Reviews on Books/Authors
+
+---
+
+## 🧱 Tech Stack
+
+- **Backend:** Node.js, Express.js
+- **Database:** MongoDB with Mongoose
+- **Authentication:** Passport.js / Session or JWT (based on your config)
+- **File Uploads:** Multer
+- **Frontend:** HTML, CSS, JavaScript
+
+---
+
+my note 
 THIS WEEK: FINISH DESIGN AND USE CASE
 DO all the technical stuff first, adding a review, commenting on review.
 
@@ -27,7 +53,10 @@ intro
 literature reivew
 
 Add more info relate work: mongodb sql, nodejs - bootstrap - database, add more to intro
+<<<<<<< HEAD
 
 color - constraint adding author/book  -review at book
 
 -presentation
+=======
+>>>>>>> 33f11915ff7b9888c3047a4e69d6256ce9185177
