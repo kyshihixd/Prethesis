@@ -260,6 +260,39 @@ router.post('/main/post-review', isAuthenticated, async (req, res) => {
     }
 });
 
+router.post('/main/post-review-2', isAuthenticated, async (req, res) => {
+    try {
+        const { bookId, title, rating, review} = req.body;
+
+
+        const newReview = new Review({
+            book: bookId,
+            user: req.session.userId,
+            rating: rating,
+            head: title,
+            content: review
+        });
+
+        await newReview.save();
+        res.status(201).send('Review created successfully!');
+
+        await Book.findByIdAndUpdate(
+            bookId,
+            { $push: { review: newReview._id } },
+            { new: true }
+        );
+
+        await User.findByIdAndUpdate(
+            req.session.userId,
+            { $push: { review: newReview._id } },
+            { new: true }
+        );
+    } catch (err) {
+        console.error('Error saving user data:', err);
+        res.status(500).send(`failed`);
+    }
+});
+
 router.post('/user/bookToTrade', isAuthenticated, async (req, res) => {
     try {
         const { bookname, author, username } = req.body;

@@ -8,87 +8,89 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
+
     <title>Book Review Forum</title>
 
     <link rel="stylesheet" href="/mainpage/style.css">
     <style>
-        
-
         #mainPageBar {
             color: #fff;
             background-color: #34495e;
         }
-        
+
         body.light-mode #bookPageBar {
             color: #aaaaaa;
             background-color: #b2b3b4;
         }
-
     </style>
     <script src="/scripts/persistUsername.js"></script>
 </head>
 
 <body class="bg-dark text-light">
     <nav class="navbar navbar-expand-lg navbar-dark bg-secondary border-bottom" id="navBarRow">
-        
+
     </nav>
 
     <div class="container-fluid g-0 ">
         <div class="row">
-            <div class = "col-2 sidebar border-end mt-2 g-0"  id = "navBarCol">
-                
-            </div>
-
-
-
-        <div class="mt-3 col main-content">
-
-            <div id="book-info" class = "m-0 mt-3 p-0 row justify-content-center">
+            <div class="col-2 sidebar border-end mt-2 g-0" id="navBarCol">
 
             </div>
+
+
+
+            <div class="mt-3 col main-content">
+
+                <div id="book-info" class="m-0 mt-3 p-0 row justify-content-center">
+
+                </div>
+
+                <div id="bookReview" class="m-0 p-0 row justify-content-center">
+
+                </div>
+            </div>
+
+            <div class="col-2">
+
+            </div>
+
         </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="/scripts/navBarCol.js"></script>
+        <script src="/scripts/navBarRow.js"></script>
+        <script src="/scripts/pathing.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", async () => {
+                const bookInfo = document.getElementById("book-info");
+                const reviewForm = document.getElementById("bookReview");
 
-        <div class="col-2">
+                const urlParams = new URLSearchParams(window.location.search);
+                const bookId = urlParams.get('id');
 
-        </div>
-        
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src = "/scripts/navBarCol.js"></script>
-    <script src = "/scripts/navBarRow.js"></script>
-    <script src = "/scripts/pathing.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", async () => {
-            const bookInfo = document.getElementById("book-info");
-
-            const urlParams = new URLSearchParams(window.location.search);
-            const bookId = urlParams.get('id');
-            
-            if (!bookId) {
-                bookInfo.innerHTML = "<p>Book ID not found in URL.</p>";
-                return;
-            }
-
-            try {
-                const response = await fetch(`/api/book-details/${bookId}`);
-                if (!response.ok) throw new Error("Failed to fetch book details");
-
-                const book = await response.json();
-                console.log("Fetched Book:", book);
-
-                let reviewContent = "";
-                let rating = "";
-                if (book.review.length > 0) {
-                    for (let i = 0; i < book.review.length; i++) {
-                        reviewContent += `<p>${book.review[i].content}</p>`;
-                        rating = book.review[i].rating;
-                    }
-                } else {
-                    reviewContent = "<p>No reviews available.</p>";
+                if (!bookId) {
+                    bookInfo.innerHTML = "<p>Book ID not found in URL.</p>";
+                    return;
                 }
 
-                bookInfo.innerHTML = `
+                try {
+                    const response = await fetch(`/api/book-details/${bookId}`);
+                    if (!response.ok) throw new Error("Failed to fetch book details");
+
+                    const book = await response.json();
+                    console.log("Fetched Book:", book);
+
+                    let reviewContent = "";
+                    let rating = "";
+                    if (book.review.length > 0) {
+                        for (let i = 0; i < book.review.length; i++) {
+                            reviewContent += `<p>${book.review[i].content}</p>`;
+                            rating = book.review[i].rating;
+                        }
+                    } else {
+                        reviewContent = "<p>No reviews available.</p>";
+                    }
+
+                    bookInfo.innerHTML = `
                     <div class="card book-card p-4 mt-5 w-100" style="max-width: 700px;">
                         <div class="text-center mb-4">
                             <img src="${book.coverImagePath || '/images/bookcover/default.jpg'}"
@@ -128,11 +130,72 @@
                     </div>
                 `;
 
-            } catch (error) {
-                console.log("Error fetching book details:", error);
-                bookInfo.innerHTML = `<p>Error loading book details. Check console for details, ${error}.</p>`;
-            }
-        });
-    </script>
+                    reviewForm.innerHTML = `
+                    <div class="card book-card p-4 mt-5 w-100" style="max-width: 700px;">
+                        <h2 class="text-center mb-3">Write a review</h2>
+                        <form id="createReviewForm" class = "">
+                            <div class="mb-3">
+                                <label for="rating" class="form-label">Rating</label>
+                                <input type="number" class="form-control" id="rating" min="0" max="100">
+                            </div>
+                            <div class="mb-3">
+                                <label for="reviewTitle" class="form-label">Review Title</label>
+                                <input type="text" class="form-control" id="reviewTitle">
+                            </div>
+                            <div class="mb-3">
+                                <label for="userReview" class="form-label">Your review</label>
+                                <textarea class="form-control" id="userReview" rows="8"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <p id="errorMessage" class="text-danger text-center mt-3" style="display: none;">An error occurred.
+                            </p>
+                        </form>
+                    </div>
+                `;
+                
+                document.getElementById("createReviewForm").addEventListener("submit", async (e) => {
+                    e.preventDefault();
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const bookId = urlParams.get('id');
+                    console.log("Book ID:", bookId);
+                    const formData = {
+                        bookId: bookId,
+                        title: document.getElementById("reviewTitle").value,
+                        rating: document.getElementById("rating").value,
+                        review: document.getElementById("userReview").value,
+                    };
+
+                    try {
+                        const response = await fetch("/main/post-review-2", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(formData),
+                        });
+
+                        if (response.ok) {
+                            alert("Review submitted successfully!");
+                        } else {
+                            const errText = await response.text();
+                            console.error("Server responded with:", errText);
+                            document.getElementById("errorMessage").style.display = "block";
+                        }
+                    } catch (err) {
+                        console.error("Error:", err);
+                        document.getElementById("errorMessage").style.display = "block";
+                        alert("An error occurred.");
+                    }
+                });
+                } catch (error) {
+                    console.log("Error fetching book details:", error);
+                    bookInfo.innerHTML = `<p>Error loading book details. Check console for details, ${error}.</p>`;
+                }
+            });
+
+
+
+        </script>
+
+
 </body>
+
 </html>

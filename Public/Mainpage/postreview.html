@@ -126,20 +126,6 @@
 });
 
 
-document.addEventListener("DOMContentLoaded", () => {
-    const params = new URLSearchParams(window.location.search);
-    const username = params.get("user");
-
-    if (username) {
-        const logoLink = document.getElementById("logoMain");
-        const createReview = document.getElementById("createReview");
-
-        if (logoLink && createReview) {
-            createReview.href = `/main/post?user=${encodeURIComponent(username)}`;
-            logoLink.href = `/main?user=${encodeURIComponent(username)}`;
-        }
-    }
-});
 </script>
 </body>
 
