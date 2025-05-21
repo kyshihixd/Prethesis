@@ -1,20 +1,27 @@
-const params = new URLSearchParams(window.location.search);
-const urlUsername = params.get("user");
-const storedUsername = localStorage.getItem("username");
+document.addEventListener("DOMContentLoaded", async () => {
+    try {
+        const res = await fetch("/api/session");
+        if (!res.ok) throw new Error("Session fetch failed");
+        
+        const sessionData = await res.json();
+        const { username, admin } = sessionData;
 
-if (!storedUsername && urlUsername) {
-    localStorage.setItem("username", urlUsername);
-    window.location.href = `${window.location.pathname}?user=${urlUsername}`;
-}
+        if (!username) {
+            alert("Session expired or not logged in. Please log in again.");
+            return window.location.href = "/login";
+        }
 
-else if (storedUsername && urlUsername !== storedUsername) {
-    window.location.href = `${window.location.pathname}?user=${storedUsername}`;
-}
+        const params = new URLSearchParams(window.location.search);
+        const urlUsername = params.get("user");
 
-else if (!storedUsername && !urlUsername) {
-    alert("Username not found. Please log in again.");
-    window.location.href = "/login";
-}
+        if (urlUsername !== username) {
+            window.location.href = `${window.location.pathname}?user=${username}`;
+            return;
+        }
 
-else {
-}
+    } catch (error) {
+        console.error("Error fetching session:", error);
+        alert("Login required. Redirecting...");
+        window.location.href = "/login";
+    }
+});

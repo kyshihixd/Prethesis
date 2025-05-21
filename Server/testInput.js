@@ -64,6 +64,26 @@ async function updateBook() {
     }
 }
 
+async function updateUser(){
+    try {
+        const user = await User.findOneAndUpdate(
+            {username: "logintest"},
+            {admin: true},
+            {new: true},
+        );
+        
+        if (!user){
+            console.log("User not found")
+            return ;
+        }
+
+    }
+    catch (error) {
+        console.error("Error: "+ error);
+
+    }
+}
+
 async function addReview() {
     try {
         const book = await Book.findOne({title: "Test book 2"}).exec();
@@ -94,5 +114,14 @@ async function addReview() {
     }
 }
 
-addReview();
+async function adminAll(){
+    try {   
+        await User.updateMany({ admin: { $exists: false } }, { $set: { admin: false } });
+
+    } catch (error){
+        console.error("There is an error:" + error)
+    }
+}
+
+updateUser()
 

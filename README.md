@@ -55,7 +55,7 @@ literature reivew
 Add more info relate work: mongodb sql, nodejs - bootstrap - database, add more to intro
 <<<<<<< HEAD
 
-color - constraint adding author/book  -review at book
+color - review at book
 
 -presentation
 =======

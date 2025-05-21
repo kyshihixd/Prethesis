@@ -135,6 +135,9 @@ router.get('/main/trending', isAuthenticated, (req, res) => {
 });
 
 router.get('/main/author-edit', isAuthenticated, (req, res) => {
+    if (!req.session.admin) {
+        return res.status(403).json({ message: "Access denied. Admins only." });
+    }
     res.sendFile(path.join(__dirname, '../Public/Mainpage/author-edit.html'));
 });
 
@@ -303,7 +306,16 @@ router.post('/user/bookToTrade', isAuthenticated, async (req, res) => {
 });
 
 
-
+router.get('/api/session', isAuthenticated, async ( req, res ) => {
+    try {
+        const {userId, username, admin } = req.session;
+        res.json({userId, username, admin})
+    }
+    catch (error){
+        console.error("Error: " + error);
+        return res.status(500).send("Internal server error.");
+    }
+})
 
 router.get('/api/book-details/:id', isAuthenticated, async (req, res) => {
     try {
@@ -346,6 +358,10 @@ router.get('/api/author-details/:id', isAuthenticated, async (req, res) => {
 
 
 router.put('/api/author-edit/:id', isAuthenticated, uploadAuthor.single("authorCoverImagePath"), async (req, res) => {
+    if (!req.session.admin) {
+        return res.status(403).json({ message: "Access denied. Admins only." });
+    }
+    
     try {
         const authorId = req.params.id;
         const author = await Author.findById(authorId);

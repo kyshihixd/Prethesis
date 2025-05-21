@@ -19,9 +19,17 @@ router.post('/Login', async (req, res) => {
 
         const match = await bcrypt.compare(password, existingUser.password);
         if (match) {
-            req.session.userId = existingUser._id;
-            req.session.username = existingUser.username;
-            return res.status(201).send("Correct credential, logging in");
+            req.session.regenerate((err) => {
+                if (err) {
+                    console.error("Session regeneration failed:", err);
+                    return res.status(500).send("Server error");
+                }
+        
+                req.session.userId = existingUser._id;
+                req.session.username = existingUser.username;
+                req.session.admin = existingUser.admin;
+                return res.status(201).send("Correct credential, logging in");
+            });
         } else {
             return res.status(401).send("Incorrect username or password");
         }

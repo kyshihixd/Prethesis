@@ -32,7 +32,12 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Book",
         default: [],
-    }]
+    }],
+
+    admin: {
+        type: Boolean,
+        default: false,
+    }
 });
 
 const Usertest = mongoose.model("User", userSchema);
