@@ -1,0 +1,171 @@
+p,h1,h2,h4,h5,h3 {
+    color: white;
+}
+
+
+/*body {
+    font-family: "Poppins", sans-serif;
+    background: linear-gradient(to bottom, #1a1a1a, #2c3e50);
+    background-attachment: fixed;
+}
+*/
+.sidebar {
+    position: fixed;
+    top: 56px;
+    bottom: 0;
+    left: 0;
+    width: 16.666%;
+    overflow-y: auto;
+    z-index: 1030;
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1040;
+}
+
+.main-content {
+    margin-top: 56px;
+    margin-left: 16.666%;
+    padding: 1rem;
+}
+
+
+.sidebar a {
+    transition: color 0.3s ease, background-color 0.3s ease;
+    padding: 10px;
+    width: 50%;
+    border-radius: 5px;
+}
+
+.sidebar li:hover {
+    color: #fff;
+    background-color: #34495e;
+}
+
+.custom-logo {
+    width: 35px;
+    height: auto;
+}
+
+a {
+    color: aliceblue;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.book-card {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.book-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: #343a40;
+    border: 1px solid #495057;
+}
+
+
+    body.light-mode {
+        background: linear-gradient(to bottom, #f0f0f0);
+        color: #212529;
+    }
+
+    body.light-mode p,
+    body.light-mode span,
+    body.light-mode h1,
+    body.light-mode h2,
+    body.light-mode h3,
+    body.light-mode h4,
+    body.light-mode h5,
+    body.light-mode li,
+    body.light-mode a {
+        color: #212529;
+    }
+
+    body.light-mode .navbar {
+        background-color: #e9ecef !important;
+        color: #212529 !important;
+        border-color: #dee2e6 !important;
+    }
+
+    body.light-mode .book-card {
+        background-color: #ffffff;
+        color: #212529;
+        border: 1px solid #dee2e6;
+    }
+
+    body.light-mode .sidebar {
+        background-color: #f8f9fa;
+        color: #212529;
+    }
+
+    body.light-mode .sidebar li:hover {
+        background-color: #dee2e6;
+    }
+
+    body.light-mode .nav-link,
+    body.light-mode .navbar-brand {
+        color: #212529 !important;
+    }
+
+    body.light-mode input.form-control {
+        background-color: #ffffff;
+        color: #212529;
+        border: 1px solid #ced4da;
+    }
+
+    body.light-mode .dropdown-menu {
+        background-color: #ffffff;
+        color: #212529;
+    }
+
+    body.light-mode .dropdown-item:hover {
+        background-color: #f1f1f1;
+    }
+
+    body.light-mode .sidebar {
+        background-color: #f8f9fa;
+        border-right: 1px solid #dee2e6;
+    }
+    
+    body.light-mode .sidebar a {
+        color: #212529 !important;
+        background-color: transparent;
+    }
+    
+    body.light-mode .sidebar li {
+        background-color: transparent;
+    }
+    
+    body.light-mode .sidebar li:hover {
+        color: white;
+        background-color: #e2e6ea !important;
+    }
+    
+    body.light-mode #mainPageBar,
+    body.light-mode #discoveryPageBar,
+    body.light-mode #trendingPageBar,
+    body.light-mode #bookPageBar,
+    body.light-mode #authorPageBar,
+    body.light-mode #followingPageBar {
+        background-color: #dee2e6;
+        color: #212529;
+    }
+    
+    body.light-mode label {
+        color: #212529;
+    }
+body.light-mode .custom-logo {
+    filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(0%) contrast(100%);
+}
