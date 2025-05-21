@@ -55,6 +55,25 @@ a {
     color: aliceblue;
 }
 
+.author-card {
+    animation: fadeIn 0.5s ease-in-out;
+    
+    min-height: 150px;
+    max-height: 250px;
+}
+
+.author-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: #343a40;
+    border: 1px solid #495057;
+}
+
+body.light-mode .author-card {
+    background-color: #ffffff;
+    color: #212529;
+    border: 1px solid #dee2e6;
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;
