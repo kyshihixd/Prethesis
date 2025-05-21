@@ -58,5 +58,3 @@ Add more info relate work: mongodb sql, nodejs - bootstrap - database, add more 
 color - review at book
 
 -presentation
-=======
->>>>>>> 33f11915ff7b9888c3047a4e69d6256ce9185177
