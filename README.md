@@ -24,6 +24,10 @@ This project is a web application built using **Node.js**, **Express**, **MongoD
 - **Frontend:** HTML, CSS, JavaScript
 
 ---
+## Running
+node install
+add .evn variable
+run testServer.js
 
 my note 
 THIS WEEK: FINISH DESIGN AND USE CASE
