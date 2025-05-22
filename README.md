@@ -26,7 +26,9 @@ This project is a web application built using **Node.js**, **Express**, **MongoD
 ---
 ## Running
 node install
+
 add .evn variable
+
 run testServer.js
 
 my note 
