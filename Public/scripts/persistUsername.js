@@ -4,18 +4,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!res.ok) throw new Error("Session fetch failed");
         
         const sessionData = await res.json();
-        const { username, admin } = sessionData;
+        const { username} = sessionData;
 
         if (!username) {
             alert("Session expired or not logged in. Please log in again.");
             return window.location.href = "/login";
         }
 
-        const params = new URLSearchParams(window.location.search);
-        const urlUsername = params.get("user");
+        const url = new URL(window.location.href);       
+        const currentUser = url.searchParams.get("user");
 
-        if (urlUsername !== username) {
-            window.location.href = `${window.location.pathname}?user=${username}`;
+        if (currentUser !== username) {
+            url.searchParams.set("user", username);
+            window.location.replace(url.toString());
             return;
         }
 

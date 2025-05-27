@@ -49,9 +49,12 @@ router.get('/main', isAuthenticated, (req, res) => {
 router.get('/books', isAuthenticated, async (req, res) => {
     try {
         const books = await Book.find();
-        var populatedBooks = await Promise.all(
+        const populatedBooks = await Promise.all(
             books.map(async (book) => {
-                return await Book.findById(book._id).populate('review').populate('author').exec();
+                return await Book.findById(book._id)
+                    .populate('author')
+                    .populate('review')
+                    .exec();
             })
         );
 
@@ -338,6 +341,28 @@ router.post('/user/bookToTrade', isAuthenticated, async (req, res) => {
     }
 });
 
+router.get('/api/search', async (req, res) => {
+    const query = req.query.q;
+    if (!query) return res.json([]);
+
+    try {
+        const reviews = await Review.find({ head: new RegExp(query, 'i') }).limit(5).populate('book').populate('user');
+        const books = await Book.find({ title: new RegExp(query, 'i') }).limit(5).populate('author');
+        const authors = await Author.find({ penname: new RegExp(query, 'i') }).limit(5);
+
+        const results = [
+            ...reviews.map(r => ({ ...r.toObject(), type: 'review' })),
+            ...books.map(b => ({ ...b.toObject(), type: 'book' })),
+            ...authors.map(a => ({ ...a.toObject(), type: 'author' }))
+        ];
+
+        res.json(results);
+    } catch (error) {
+        console.error("Search error:", error);
+        res.status(500).json([]);
+    }
+});
+
 
 router.get('/api/session', isAuthenticated, async ( req, res ) => {
     try {
@@ -353,7 +378,13 @@ router.get('/api/session', isAuthenticated, async ( req, res ) => {
 router.get('/api/book-details/:id', isAuthenticated, async (req, res) => {
     try {
         const id = req.params.id;
-        const book = await Book.findById(id).populate('review').populate("author").exec();
+        const book = await Book.findById(id).populate({
+            path: 'review',
+            populate: {
+              path: 'user',
+              model: 'User',        
+            },
+          }).populate("author").exec();
 
 
         res.json(book);

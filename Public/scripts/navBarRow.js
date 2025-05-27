@@ -12,11 +12,16 @@ document.addEventListener("DOMContentLoaded", () => {
             </a>
         </div>
 
-        <div class="col-6 align-item-center justify-content-center d-flex">
-            <form class="d-flex col-8">
-                <input class="form-control me-2" type="search" placeholder="Search books..." aria-label="Search">
+        <div class="col-6 align-items-center justify-content-center d-flex position-relative">
+            <form class="d-flex col-8" id="searchForm" autocomplete="off">
+                <div class="dropdown w-100">
+                <input class="form-control dropdown-toggle" type="search" id="searchInput" placeholder="Search..." data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="dropdown-menu w-100" id="searchSuggestions" aria-labelledby="searchInput"></div>
+                </div>
             </form>
-        </div>
+            </div>
+
+
 
     </div>
     <div class="mx-4 col-3 collapse navbar-collapse justify-content-end" id="navbarRow">
@@ -30,15 +35,19 @@ document.addEventListener("DOMContentLoaded", () => {
                     </svg>
                 </a>
             </li>
-            <li class="nav-item d-flex align-items-center">
-                <a id = "createReview" class="nav-link d-flex align-items-center" href="#">
+            <li class="nav-item dropdown d-flex align-items-center">
+                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="createDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
                         class="bi bi-plus-lg me-2" viewBox="0 0 16 16">
                         <path fill-rule="evenodd"
                             d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
                     </svg>
-                    <div >Create</div>
+                    <div>Create</div>
                 </a>
+                <ul class="dropdown-menu" aria-labelledby="createDropdown">
+                    <li><a class="dropdown-item" href="" id="createBook">Create Book</a></li>
+                    <li><a class="dropdown-item" href="" id="createReview">Create Review</a></li>
+                </ul>
             </li>
             <li class="nav-item dropdown d-flex align-items-center">
                 <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -49,6 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                     <li><a class="dropdown-item" href="#" id="toggleTheme">Toggle Dark/Light Mode</a></li>
+                    <li><a class="dropdown-item" href="# id="userProfile">User Profile</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="#" id="logoutBtn">Logout</a></li>
                 </ul>
@@ -78,4 +88,65 @@ document.addEventListener("DOMContentLoaded", () => {
             document.body.classList.add("light-mode");
         }
     }
+});
+
+
+document.addEventListener("DOMContentLoaded", async () => {
+    const searchInput = document.getElementById("searchInput");
+    const suggestionsBox = document.getElementById("searchSuggestions");
+
+    let debounceTimer;
+
+    const res = await fetch("/api/session");
+    if (!res.ok) throw new Error("Session fetch failed");
+        
+    const sessionData = await res.json();
+    const { username} = sessionData;
+
+    searchInput.addEventListener("input", () => {
+        clearTimeout(debounceTimer);
+        const query = searchInput.value.trim();
+
+        if (!query) {
+            suggestionsBox.classList.remove("show");
+            suggestionsBox.innerHTML = "";
+            return;
+        }
+
+        debounceTimer = setTimeout(async () => {
+            try {
+                const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+                const results = await res.json();
+
+                suggestionsBox.innerHTML = "";
+                suggestionsBox.classList.add("show");
+
+                if (results.length === 0) {
+                    suggestionsBox.innerHTML = '<span class="dropdown-item text-muted">No results found</span>';
+                    return;
+                }
+
+                results.forEach(item => {
+                    const a = document.createElement("a");
+                    a.className = "dropdown-item";
+                    if (item.type === 'book') {
+                        a.href = `/main/book-details?username=${username}&id=${item._id}`;
+                        a.textContent = `(Book) ${item.title}`;
+                    }
+                    else if (item.type === 'author') {
+                        a.href = `/main/author-details?username=${username}&id=${item._id}`;
+                        a.textContent = `(Author) ${item.penname}`;
+                    }
+                    else if (item.type === 'review') {
+                        a.href = `/main/review-details?username=${username}&id=${item._id}`;
+                        a.textContent = `(Review) ${item.head}`;
+                    }
+                    
+                    suggestionsBox.appendChild(a);
+                });
+            } catch (err) {
+                console.error("Search error:", err);
+            }
+        }, 300);
+    });
 });

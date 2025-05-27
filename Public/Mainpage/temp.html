@@ -88,7 +88,6 @@
         e.preventDefault();
         const params = new URLSearchParams(window.location.search);
         const username = params.get("user");
-        localStorage.setItem("username", username);
         const formData = {
             
             bookname: document.getElementById("bookname").value,

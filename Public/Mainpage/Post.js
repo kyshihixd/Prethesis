@@ -2,7 +2,6 @@ document.getElementById("createReviewForm").addEventListener("submit", async (e)
     e.preventDefault();
     const params = new URLSearchParams(window.location.search);
     const username = params.get("user");
-    localStorage.setItem("username", username);
     const formData = {
         
         bookname: document.getElementById("bookname").value,
@@ -34,18 +33,3 @@ document.getElementById("createReviewForm").addEventListener("submit", async (e)
     }
 });
 
-
-document.addEventListener("DOMContentLoaded", () => {
-    const params = new URLSearchParams(window.location.search);
-    const username = params.get("user");
-
-    if (username) {
-        const logoLink = document.getElementById("logoMain");
-        const createReview = document.getElementById("createReview");
-
-        if (logoLink && createReview) {
-            createReview.href = `/main/post?user=${encodeURIComponent(username)}`;
-            logoLink.href = `/main?user=${encodeURIComponent(username)}`;
-        }
-    }
-});

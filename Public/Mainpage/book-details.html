@@ -13,7 +13,7 @@
 
     <link rel="stylesheet" href="/mainpage/style.css">
     <style>
-        #mainPageBar {
+        #bookPageBar {
             color: #fff;
             background-color: #34495e;
         }
@@ -45,12 +45,16 @@
 
                 </div>
 
-                <div id="bookReview" class="m-0 p-0 row justify-content-center">
+                <div id="bookReviewForm" class="m-0 p-0 row justify-content-center">
+
+                </div>
+
+                <div id="bookReviews" class="m-0 mt-4 p-0 row justify-content-center">
 
                 </div>
             </div>
 
-            <div class="col-2">
+            <div class="col-2" id="recent">
 
             </div>
 
@@ -59,11 +63,13 @@
         <script src="/scripts/navBarCol.js"></script>
         <script src="/scripts/navBarRow.js"></script>
         <script src="/scripts/pathing.js"></script>
+        <script src="/scripts/recent.js"></script>
         <script>
             document.addEventListener("DOMContentLoaded", async () => {
                 const bookInfo = document.getElementById("book-info");
-                const reviewForm = document.getElementById("bookReview");
-
+                const reviewForm = document.getElementById("bookReviewForm");
+                const bookReviews = document.getElementById("bookReviews");
+                
                 const urlParams = new URLSearchParams(window.location.search);
                 const bookId = urlParams.get('id');
 
@@ -72,12 +78,26 @@
                     return;
                 }
 
+                
+
                 try {
                     const response = await fetch(`/api/book-details/${bookId}`);
                     if (!response.ok) throw new Error("Failed to fetch book details");
 
+                    const res = await fetch("/api/session");
+                    if (!res.ok) throw new Error("Session fetch failed");
+                    
+                    const sessionData = await res.json();
+                    const {userId, username, admin} = sessionData;
+
                     const book = await response.json();
-                    console.log("Fetched Book:", book);
+
+                    addToRecent({
+                        type: "book",
+                        id: book._id,
+                        title: book.title,
+                        author: book.author?.map(a => a.penname).join(", ")
+                    });
 
                     let reviewContent = "";
                     let rating = "";
@@ -89,7 +109,9 @@
                     } else {
                         reviewContent = "<p>No reviews available.</p>";
                     }
-
+                    if (book.coverImagePath === '/images/bookcover/undefined'){
+                        book.coverImagePath = '/images/bookcover/default.jpg';
+                    }
                     bookInfo.innerHTML = `
                     <div class="card book-card p-4 mt-5 w-100" style="max-width: 700px;">
                         <div class="text-center mb-4">
@@ -102,7 +124,12 @@
                         <h2 class="text-center mb-3">${book.title || "Untitled"}</h2>
                         
                         <div class="text-center text-muted mb-4">
-                            <p><strong>Author(s):</strong> ${book.author && book.author.length > 0 ? book.author.map(a => a.penname).join(", ") : "Unknown"}</p>
+                            <p><strong>Author(s):</strong>
+                                ${book.author && book.author.length > 0 
+                                    ? book.author.map(a => `<a href="/main/author-details?user=${username}&id=${a._id}">${a.penname}</a>`).join(", ") 
+                                    : "Unknown"}
+                            </p>
+
                         </div>
 
                         <div class="mb-3">
@@ -130,10 +157,13 @@
                     </div>
                 `;
 
-                    reviewForm.innerHTML = `
-                    <div class="card book-card p-4 mt-5 w-100" style="max-width: 700px;">
+                reviewForm.innerHTML = `
+                    <div class="text-center mt-4">
+                        <button id="showReviewFormBtn" class="btn btn-outline-light">Write a Review</button>
+                    </div>
+                    <div id="reviewFormContainer" class="card book-card p-4 mt-3 w-100 d-none" style="max-width: 700px;">
                         <h2 class="text-center mb-3">Write a review</h2>
-                        <form id="createReviewForm" class = "">
+                        <form id="createReviewForm">
                             <div class="mb-3">
                                 <label for="rating" class="form-label">Rating</label>
                                 <input type="number" class="form-control" id="rating" min="0" max="100">
@@ -147,11 +177,31 @@
                                 <textarea class="form-control" id="userReview" rows="8"></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary">Submit</button>
-                            <p id="errorMessage" class="text-danger text-center mt-3" style="display: none;">An error occurred.
-                            </p>
+                            <p id="errorMessage" class="text-danger text-center mt-3" style="display: none;">An error occurred.</p>
                         </form>
                     </div>
                 `;
+
+                document.getElementById("showReviewFormBtn").addEventListener("click", () => {
+                    const formContainer = document.getElementById("reviewFormContainer");
+                    formContainer.classList.toggle("d-none");
+                });
+
+                bookReviews.innerHTML = '';
+                book.review.forEach( r => {
+                    const username = r.user && r.user.username ? r.user.username : 'Anonymous';
+                    bookReviews.innerHTML += `
+                    <div class= "card mb-3 w-75 mx-auto book-card" onclick="gotoreview('${r._id}')">
+                        <div class = "card-body">
+                            <h3>${r.head}</h3>
+                            <p><strong>Rating:</strong> ${r.rating}  &emsp;  <strong>By user: ${username}</strong></p>
+
+                            <p>${r.content}</p>
+                            
+                    
+                        </div>
+                    </div>`;
+                })
                 
                 document.getElementById("createReviewForm").addEventListener("submit", async (e) => {
                     e.preventDefault();

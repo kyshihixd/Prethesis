@@ -15,7 +15,7 @@
     <style>
         
 
-        #mainPageBar {
+        #reviewPageBar {
             color: #fff;
             background-color: #34495e;
         }
@@ -54,6 +54,7 @@
     <script src = "/scripts/navBarCol.js"></script>
     <script src = "/scripts/navBarRow.js"></script>
     <script src = "/scripts/pathing.js"></script>
+    <script src="/scripts/recent.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
             const reviewInfo = document.getElementById("review-info");
@@ -66,11 +67,26 @@
                 return;
             }
 
+
             try {
                 const response = await fetch(`/api/review-details/${reviewId}`);
                 if (!response.ok) throw new Error("Failed to fetch review details");
 
+                const res = await fetch("/api/session");
+                if (!res.ok) throw new Error("Session fetch failed");
+                
+                const sessionData = await res.json();
+                const {userId, username, admin} = sessionData;
+
                 const review = await response.json();
+
+                addToRecent({
+                    type: "review",
+                    id: review._id,
+                    user: review.user.username,
+                    rating: review.rating,
+                    head: review.head
+                });
                 console.log("Fetched review:", review);
 
                 
@@ -78,7 +94,7 @@
                     <div class="card book-card p-3 mt-5 w-100" style="max-width: 700px;">
                         <span><h3 style="display:inline;">${review.head}</h3> &emsp; &emsp; By user: ${review.user.username}</span>
 
-                            <p><strong>Book:</strong> ${review.book.title}</p>
+                            <p><strong>Book:</strong> <a href="/main/book-details?username=${username}&id=${review.book._id}">${review.book.title}</a></p>
                             <p><strong>Final Rating:</strong> ${review.rating}</p>
                             <hr class="border-light"/>
                             <p>${review.content}</p>
