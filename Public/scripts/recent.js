@@ -55,5 +55,5 @@ document.addEventListener("DOMContentLoaded", async () => {
         `;
     } catch (error) {
         console.error("Error rendering recent items:", error);
-        document.getElementById("recent").innerHTML = `${error}`;
+        
     }});

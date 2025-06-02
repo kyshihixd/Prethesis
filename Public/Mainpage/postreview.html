@@ -44,26 +44,23 @@
                 <div class="row justify-content-center ">
                     <form id="createReviewForm" class = "w-75">
                         <div class="mb-3">
-                            <label for="bookname" class="form-label">Bookname</label>
+                            <label for="bookname" class="form-label">Bookname<span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="bookname">
                         </div>
                         <div class="mb-3">
-                            <label for="author" class="form-label">Author</label>
+                            <label for="author" class="form-label">Author<span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="author">
                         </div>
-                        <div class = "mb-3">
-                            <a id="linkToPostReview" href="">If the book you're reviewing is missing, add it.</a>
-                        </div>
                         <div class="mb-3">
-                            <label for="rating" class="form-label">Rating</label>
+                            <label for="rating" class="form-label">Rating<span class="text-danger">*</span></label>
                             <input type="number" class="form-control" id="rating" min="0" max="100">
                         </div>
                         <div class="mb-3">
-                            <label for="reviewTitle" class="form-label">Review Title</label>
+                            <label for="reviewTitle" class="form-label">Review Title<span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="reviewTitle">
                         </div>
                         <div class="mb-3">
-                            <label for="userReview" class="form-label">Your review</label>
+                            <label for="userReview" class="form-label">Your review<span class="text-danger">*</span></label>
                             <textarea class="form-control" id="userReview" rows="8"></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>

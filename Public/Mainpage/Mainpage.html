@@ -174,7 +174,7 @@
                             */
         } catch (error) {
             console.error("Error fetching books:", error);
-            reviewList.innerHTML = "<p>Error loading books. Check console for details.</p>";
+            reviewList.innerHTML = `<p>Error loading books. ${error}.</p>`;
         }
     });
 

@@ -17,6 +17,7 @@ p,h1,h2,h4,h5,h3,span, li {
     width: 16.666%;
     overflow-y: auto;
     z-index: 1030;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .navbar {
@@ -25,6 +26,7 @@ p,h1,h2,h4,h5,h3,span, li {
     left: 0;
     right: 0;
     z-index: 1040;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .main-content {
@@ -95,18 +97,19 @@ body.light-mode .author-card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     background-color: #343a40;
     border: 1px solid #495057;
+    box-shadow: 0 2px 8px rgba(196, 194, 194, 0.15);
+    border-radius: 10px;
 }
 
 
 
 .recent-card {
-    
     background-color: rgb(75, 75, 75);
     border-radius: 0.5rem;
     padding: 0.5rem 0.75rem;
     margin-bottom: 0.5rem;
-    transition: background-color 0.3s;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    transition: background-color 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Updated shadow */
 }
 
 .recent-card a {
@@ -121,6 +124,7 @@ body.light-mode .author-card {
 
     body.light-mode .recent-card{
         background-color: rgb(230, 230, 230);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
     body.light-mode .recent-card a {
@@ -148,17 +152,21 @@ body.light-mode .author-card {
         background-color: #e9ecef !important;
         color: #212529 !important;
         border-color: #dee2e6 !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     body.light-mode .book-card {
         background-color: #ffffff;
         color: #212529;
         border: 1px solid #dee2e6;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        border-radius: 10px;
     }
 
     body.light-mode .sidebar {
         background-color: #f8f9fa;
         color: #212529;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     body.light-mode .sidebar li:hover {

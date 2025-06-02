@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <div class="mx-4 col-3 collapse navbar-collapse justify-content-end" id="navbarRow">
         <ul class="navbar-nav gap-4">
             <li class="nav-item d-flex align-items-center">
-                <a class="nav-link d-flex align-items-center" href="#">
+                <a class="nav-link d-flex align-items-center" id="bell" href="#">
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
                         class="bi bi-bell" viewBox="0 0 16 16">
                         <path
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                     <li><a class="dropdown-item" href="#" id="toggleTheme">Toggle Dark/Light Mode</a></li>
-                    <li><a class="dropdown-item" href="# id="userProfile">User Profile</a></li>
+                    <li><a class="dropdown-item" href="#" id="userProf">User Profile</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="#" id="logoutBtn">Logout</a></li>
                 </ul>
@@ -70,6 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("logoutBtn").href = "/logout";
   }
 });
+
 
 document.addEventListener("DOMContentLoaded", () => {
     const toggleThemeBtn = document.getElementById("toggleTheme");
@@ -97,11 +98,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     let debounceTimer;
 
-    const res = await fetch("/api/session");
-    if (!res.ok) throw new Error("Session fetch failed");
-        
-    const sessionData = await res.json();
-    const { username} = sessionData;
+    let username = null;
+    try {
+        const res = await fetch("/api/session");
+        if (res.ok) {
+            const sessionData = await res.json();
+            username = sessionData.username;
+        }
+    } catch (err) {
+        console.warn("User not logged in.");
+    }
+
 
     searchInput.addEventListener("input", () => {
         clearTimeout(debounceTimer);

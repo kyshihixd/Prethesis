@@ -41,17 +41,17 @@ function isAuthenticated(req, res, next) {
 }
 
 
-router.get('/main', isAuthenticated, (req, res) => {
+router.get('/main',  (req, res) => {
     res.sendFile(path.join(__dirname, '../Public/Mainpage/mainpage.html'));
 });
 
 
-router.get('/books', isAuthenticated, async (req, res) => {
+router.get('/books',  async (req, res) => {
     try {
         const books = await Book.find();
         const populatedBooks = await Promise.all(
             books.map(async (book) => {
-                return await Book.findById(book._id)
+                return await Book.findById(book._id).limit(30)
                     .populate('author')
                     .populate('review')
                     .exec();
@@ -66,12 +66,12 @@ router.get('/books', isAuthenticated, async (req, res) => {
     }
 });
 
-router.get('/reviews', isAuthenticated, async (req, res) => {
+router.get('/reviews', async (req, res) => {
     try {
         const reviews = await Review.find();
         var populatedReviews = await Promise.all(
             reviews.map(async (review) => {
-                return await Review.findById(review._id).populate('comment').populate('book').populate('user').exec();
+                return await Review.findById(review._id).limit(20).populate({path:'book', populate: {path: "title"}}).populate({path: 'user', populate: {path: "username"}}).exec();
             })
         );
 
@@ -83,7 +83,7 @@ router.get('/reviews', isAuthenticated, async (req, res) => {
     }
 });
 
-router.get('/authors', isAuthenticated, async (req, res) => {
+router.get('/authors',  async (req, res) => {
     try {
         const authors = await Author.find();
         var populatedAuthors = await Promise.all(
@@ -101,7 +101,7 @@ router.get('/authors', isAuthenticated, async (req, res) => {
 });
 
 
-router.get('/main/book-details', isAuthenticated, (req, res) => {
+router.get('/main/book-details', (req, res) => {
     res.sendFile(path.join(__dirname, '../Public/Mainpage/book-details.html'));
 });
 
@@ -113,27 +113,27 @@ router.get('/main/post-book', isAuthenticated, (req, res) => {
     res.sendFile(path.join(__dirname, '../Public/Mainpage/postbook.html'));
 });
 
-router.get('/main/review-details', isAuthenticated, (req, res) => {
+router.get('/main/review-details', (req, res) => {
     res.sendFile(path.join(__dirname, '../Public/Mainpage/review-details.html'));
 });
 
-router.get('/main/author-details', isAuthenticated, (req, res) => {
+router.get('/main/author-details',  (req, res) => {
     res.sendFile(path.join(__dirname, '../Public/Mainpage/author-details.html'));
 });
 
-router.get('/main/books', isAuthenticated, (req, res) => {
+router.get('/main/books', (req, res) => {
     res.sendFile(path.join(__dirname, '../Public/Mainpage/bookpage.html'));
 });
 
-router.get('/main/authors', isAuthenticated, (req, res) => {
+router.get('/main/authors',  (req, res) => {
     res.sendFile(path.join(__dirname, '../Public/Mainpage/authorpage.html'));
 });
 
-router.get('/main/discovery', isAuthenticated, (req, res) => {
+router.get('/main/discovery',  (req, res) => {
     res.sendFile(path.join(__dirname, '../Public/Mainpage/discoverypage.html'));
 });
 
-router.get('/main/trending', isAuthenticated, (req, res) => {
+router.get('/main/trending',  (req, res) => {
     res.sendFile(path.join(__dirname, '../Public/Mainpage/trendingpage.html'));
 });
 
@@ -375,7 +375,7 @@ router.get('/api/session', isAuthenticated, async ( req, res ) => {
     }
 })
 
-router.get('/api/book-details/:id', isAuthenticated, async (req, res) => {
+router.get('/api/book-details/:id', async (req, res) => {
     try {
         const id = req.params.id;
         const book = await Book.findById(id).populate({
@@ -394,7 +394,7 @@ router.get('/api/book-details/:id', isAuthenticated, async (req, res) => {
     }
 });
 
-router.get('/api/review-details/:id', isAuthenticated, async (req, res) => {
+router.get('/api/review-details/:id',  async (req, res) => {
     try {
         const id = req.params.id;
         const review = await Review.findById(id).populate('comment').populate("book").populate("user").exec();
@@ -407,7 +407,7 @@ router.get('/api/review-details/:id', isAuthenticated, async (req, res) => {
     }
 });
 
-router.get('/api/author-details/:id', isAuthenticated, async (req, res) => {
+router.get('/api/author-details/:id',  async (req, res) => {
     try {
         const id = req.params.id;
         const author = await Author.findById(id).populate("book").exec();

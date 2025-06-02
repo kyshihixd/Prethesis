@@ -80,14 +80,24 @@
                 const sessionRes = await fetch("/api/session");
                 if (!sessionRes.ok) throw new Error("Failed to fetch session data");
 
-                const session = await sessionRes.json();
-                const { userId, username, admin } = session;
+
+                let username = null;
                 let isAdmin = false;
+                try {
+                    const res = await fetch("/api/session");
+                    if (res.ok) {
+                        const sessionData = await res.json();
+                        const { userId, username, admin } = sessionData;
+                        let isAdmin = false;
 
-                if (session && session.admin === true) {
-                    isAdmin = true;
+                    if (session && session.admin === true) {
+                        isAdmin = true;
+                    }
+
+                    }
+                } catch (e) {
+                    console.log("No session - guest viewing allowed.");
                 }
-
 
 
                 const response = await fetch(`/api/author-details/${authorId}`);
@@ -143,7 +153,7 @@
                             <ul>
                                 ${
                                     author.book && author.book.length > 0 
-                                        ? author.book.map(b => `<li><a href="/main/book-details?user=${username}&id=${b._id}">${b.title || "Untitled"}</a></li>`).join("") 
+                                        ? author.book.map(b => `<li><a href="/main/book-details?${username ? `user=${username}&` : ''}id=${b._id}">${b.title || "Untitled"}</a></li>`).join("") 
                                         : "<li>No books listed.</li>"
                                 }
                             </ul>

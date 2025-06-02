@@ -54,7 +54,7 @@
                 </div>
             </div>
 
-            <div class="col-2" id="recent">
+            <div class="col-2 mt-5 pt-5 me-5 " id="recent">
 
             </div>
 
@@ -84,11 +84,19 @@
                     const response = await fetch(`/api/book-details/${bookId}`);
                     if (!response.ok) throw new Error("Failed to fetch book details");
 
-                    const res = await fetch("/api/session");
-                    if (!res.ok) throw new Error("Session fetch failed");
-                    
-                    const sessionData = await res.json();
-                    const {userId, username, admin} = sessionData;
+                    let userId = null;
+                    let username = null;
+                    let admin = false;
+
+                    try {
+                        const res = await fetch("/api/session");
+                        if (res.ok) {
+                            const sessionData = await res.json();
+                            const {userId, username, admin} = sessionData;
+                        }
+                    } catch (e) {
+                        console.log("No session - guest viewing allowed.");
+                    }
 
                     const book = await response.json();
 
@@ -126,7 +134,7 @@
                         <div class="text-center text-muted mb-4">
                             <p><strong>Author(s):</strong>
                                 ${book.author && book.author.length > 0 
-                                    ? book.author.map(a => `<a href="/main/author-details?user=${username}&id=${a._id}">${a.penname}</a>`).join(", ") 
+                                    ? book.author.map(a => `<a href="/main/author-details?${username ? `user=${username}&` : ''}id=${a._id}">${a.penname}</a>`).join(", ") 
                                     : "Unknown"}
                             </p>
 

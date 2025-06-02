@@ -21,8 +21,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
     } catch (error) {
-        console.error("Error fetching session:", error);
-        alert("Login required. Redirecting...");
-        window.location.href = "/login";
+        console.log("Guest viewing - no session:", error.message);
     }
 });
