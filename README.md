@@ -63,4 +63,4 @@ Add more info relate work: mongodb sql, nodejs - bootstrap - database, add more 
 
 Cookies keep tabs on recently looked at reviews/books - Search function - update responsiveness
 
--presentation
+In the latex report, add further for user profile

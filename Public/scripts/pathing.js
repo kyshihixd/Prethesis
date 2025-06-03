@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const postBookPage = document.getElementById("createBook");
         const postReviewPage = document.getElementById("createReview");        
-
+        const userProf = document.getElementById("userProf");
         
 
         logoLink.href = `/main?user=${encodeURIComponent(username)}`;
@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         discoverypage.href = `/main/discovery?user=${encodeURIComponent(username)}`;
         postBookPage.href = `/main/post-book?user=${encodeURIComponent(username)}`;
         postReviewPage.href = `/main/post-review?user=${encodeURIComponent(username)}`;
+        userProf.href = `/main/user-profile?user=${encodeURIComponent(username)}`;
     } else {
         const logoLink = document.getElementById("logoMain");
         const mainPage = document.getElementById("mainPage");
@@ -45,7 +46,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const postBookPage = document.getElementById("createBook");
         const postReviewPage = document.getElementById("createReview");
         const userProfilePage = document.getElementById("userProf");
-
+        
         logoLink.href = `/main`;
         mainPage.href = `/main`;
         bookpage.href = `/main/books`;

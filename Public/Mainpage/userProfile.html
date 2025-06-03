@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <title>User Profile</title>
+
+    <link rel="stylesheet" href="/mainpage/style.css">
+    <style>
+        
+
+
+
+    </style>
+    <script src="/scripts/persistUsername.js"></script>
+</head>
+
+<body class="bg-dark text-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary border-bottom" id="navBarRow">
+        
+    </nav>
+
+    <div class="container-fluid g-0 ">
+        <div class="row">
+            <div class = "col-2 sidebar border-end mt-2 g-0"  id = "navBarCol">
+                
+            </div>
+        
+
+
+
+            <div class="col main-content ">
+                <h2 class="text-center mb-4 mt-3">
+                    <i class="fas fa-book me-2"></i>User Profile
+                </h2>
+
+                <div id="user-profile" class="row justify-content-center ">
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src = "/scripts/navBarCol.js"></script>
+    <script src = "/scripts/navBarRow.js"></script>
+    <script src = "/scripts/pathing.js"></script>
+    <script src="/scripts/recent.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const userProfile = document.getElementById("user-profile");
+        
+            try {
+                const response = await fetch("/currentUser");
+                if (!response.ok) throw new Error("Failed to fetch user");
+        
+                const user = await response.json();
+                console.log("Fetched user:", user);
+                const userCard = document.createElement("form");
+                userCard.className = "card w-75 mb-4 p-3 book-card";
+                userCard.innerHTML = `
+                    <h4><i class="bi bi-person-circle me-2"></i>Edit Profile</h4>
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <input type="text" class="form-control" name="username" value="${user.username || ''}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control" name="name" value="${user.name !== undefined ? user.name : ''}" placeholder="${user.name === undefined? 'Please update your name' : ''}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" name="gmail" value="${user.gmail !== undefined ? user.gmail : ''}" placeholder="${user.gmail === undefined ? 'Please update your email' : ''}">
+                    </div>
+                    <button type="submit" class="btn btn-success">Save Changes</button>
+                `;
+                userProfile.appendChild(userCard);
+        
+                userCard.addEventListener("submit", async (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(userCard);
+                    const data = Object.fromEntries(formData.entries());
+        
+                    try {
+                        const updateRes = await fetch("/updateUser", {
+                            method: "PATCH",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(data),
+                        });
+        
+                        if (!updateRes.ok) throw new Error("Failed to update user.");
+                        location.reload();
+                    } catch (err) {
+                        alert("Error saving changes.");
+                        console.error(err);
+                    }
+                });
+        
+                const reviewList = document.createElement("div");
+                reviewList.className = "w-75";
+        
+                if (user.review && user.review.length > 0) {
+                    const reviewHeader = document.createElement("h4");
+                    reviewHeader.innerHTML = `<i class="bi bi-journal-text me-2"></i>User Reviews`;
+                    reviewList.appendChild(reviewHeader);
+        
+                    user.review.forEach(r => {
+                        const reviewCard = document.createElement("div");
+                        reviewCard.className = "card mb-3 pb-1 p-3 position-relative book-card";
+        
+                        const trash = document.createElement("i");
+                        trash.className = "bi bi-trash-fill trash-icon text-danger position-absolute top-0 end-0 m-3";
+                        trash.style.cursor = "pointer";
+                        trash.title = "Delete Review";
+        
+                        trash.addEventListener("click", async () => {
+                            if (confirm("Are you sure you want to delete this review?")) {
+                                try {
+                                    const res = await fetch(`/reviews/${r._id}`, {
+                                        method: "DELETE",
+                                    });
+                                    if (!res.ok) throw new Error("Failed to delete review");
+                                    location.reload();
+                                } catch (err) {
+                                    alert("Error deleting review.");
+                                    console.error(err);
+                                }
+                            }
+                        });
+        
+                        reviewCard.innerHTML = `
+                            <h5>${r.head || "Untitled Review"}</h5>
+                            <p>Score: ${r.rating +"/100" || "Unrated"}</p>
+                            <p>${r.content || "No content."}</p>
+                            <p class="text-muted"><small>Posted: ${new Date(r.createdAt).toLocaleDateString()}</small></p>
+                        `;
+                        reviewCard.appendChild(trash);
+                        reviewList.appendChild(reviewCard);
+                    });
+                } else {
+                    reviewList.innerHTML += `<p class="text-muted">No reviews available.</p>`;
+                }
+        
+                userProfile.appendChild(reviewList);
+        
+            } catch (error) {
+                console.error("Error fetching user:", error);
+                userProfile.innerHTML = `<p class="text-danger">Error loading user profile: ${error.message}</p>`;
+            }
+        });
+        </script>
+        
+        
+</body>
+
+</html>

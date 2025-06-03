@@ -45,6 +45,31 @@ router.get('/main',  (req, res) => {
     res.sendFile(path.join(__dirname, '../Public/Mainpage/mainpage.html'));
 });
 
+router.get('/currentUser', async (req, res) => {
+    try {
+        if (!req.session || !req.session.userId) {
+            return res.status(401).json({ error: "User not authenticated" });
+        }
+
+        const user = await User.findById(req.session.userId).populate("review").exec();
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        res.json({
+            userId: user._id,
+            username: user.username,
+            name: user.name,
+            createAt: user.createdAt,
+            gmail: user.gmail,
+            review: user.review
+        });
+    }
+    catch (err) {
+        console.error("Error fetching current user:", err);
+        res.status(500).json({ error: "Failed to fetch current user" });
+    }
+});
 
 router.get('/books',  async (req, res) => {
     try {
@@ -135,6 +160,10 @@ router.get('/main/discovery',  (req, res) => {
 
 router.get('/main/trending',  (req, res) => {
     res.sendFile(path.join(__dirname, '../Public/Mainpage/trendingpage.html'));
+});
+
+router.get('/main/user-profile', isAuthenticated, (req, res) => {
+    res.sendFile(path.join(__dirname, '../Public/Mainpage/userProfile.html'));
 });
 
 router.get('/main/author-edit', isAuthenticated, (req, res) => {
@@ -463,4 +492,33 @@ router.put('/api/author-edit/:id', isAuthenticated, uploadAuthor.single("authorC
         res.status(500).json({ message: "Server error" });
     }
 })
+
+router.patch('/updateUser', async (req, res) => {
+    try {
+        if (!req.session.userId) return res.status(401).json({ error: "Not authenticated" });
+
+        const { username, name, gmail } = req.body;
+        const user = await User.findByIdAndUpdate(
+            req.session.userId,
+            { username, name, gmail },
+            { new: true }
+        );
+
+        res.json(user);
+    } catch (err) {
+        console.error("Update error:", err);
+        res.status(500).json({ error: "Update failed" });
+    }
+});
+
+router.delete('/reviews/:id', async (req, res) => {
+    try {
+        const reviewId = req.params.id;
+        await Review.findByIdAndDelete(reviewId);
+        res.sendStatus(204);
+    } catch (err) {
+        console.error("Review deletion error:", err);
+        res.status(500).json({ error: "Failed to delete review" });
+    }
+});
 module.exports = router;

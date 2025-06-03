@@ -1,4 +1,4 @@
-p,h1,h2,h4,h5,h3,span, li {
+p,h1,h2,h4,h5,h3,span, li, small {
     color: white;
 }
 
@@ -117,19 +117,42 @@ body.light-mode .author-card {
     text-decoration: none;
 }
 
+
+.trash-icon {
+    border: 1px solid #dc3545; /* Bootstrap's danger color */
+    border-radius: 0.5rem;
+    padding: 0.2rem;
+    color: #dc3545;
+    background-color: transparent;
+    transition: all 0.2s ease-in-out;
+    font-size: 1.2rem;
+}
+
+.trash-icon:hover {
+    background-color: #000000;
+    color: rgb(102, 100, 100);
+    cursor: pointer;
+}
+
 .recent-card a:hover {
     text-decoration: underline;
 }
 
 
     body.light-mode .recent-card{
-        background-color: rgb(230, 230, 230);
+        background-color: rgb(224, 224, 224);
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
     body.light-mode .recent-card a {
         color: rgb(0, 0, 0);
 
+    }
+
+    body.light-mode .trash-icon:hover {
+        background-color: #d4d0d0;
+        color: rgb(148, 147, 147);
+        cursor: pointer;
     }
     body.light-mode {
         background: linear-gradient(to bottom, #f0f0f0);
@@ -144,6 +167,7 @@ body.light-mode .author-card {
     body.light-mode h4,
     body.light-mode h5,
     body.light-mode li,
+    body.light-mode small,
     body.light-mode a {
         color: #212529;
     }
