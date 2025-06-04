@@ -143,7 +143,10 @@ body.light-mode .author-card {
         background-color: rgb(224, 224, 224);
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
-
+    body.light-mode button {
+        color: black;
+        border: 1px solid #000000;
+    }
     body.light-mode .recent-card a {
         color: rgb(0, 0, 0);
 
