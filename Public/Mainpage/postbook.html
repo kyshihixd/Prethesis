@@ -97,9 +97,9 @@
                             <label for="description" class="form-label">Book description</label>
                             <textarea class="form-control" id="description" name="description" rows="8"></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
                         <p id="errorMessage" class="text-danger text-center mt-3" style="display: none;">An error occurred.
                         </p>
+                        <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
 
                 </div>
@@ -119,13 +119,22 @@
     <script>
         document.getElementById("createReviewForm").addEventListener("submit", async (e) => {
     e.preventDefault();
-
+            
     const params = new URLSearchParams(window.location.search);
     const username = params.get("user");
 
     const formElement = document.getElementById("createReviewForm");
     const formData = new FormData(formElement);
     formData.append("username", username);
+
+    const fileInput = document.getElementById("formFile");
+    const file = fileInput.files[0];
+
+    if (file && !file.type.startsWith("image/")) {
+        document.getElementById("errorMessage").textContent = "Only image files are allowed.";
+        document.getElementById("errorMessage").style.display = "block";
+        return;
+    }
 
     try {
         const response = await fetch("/main/post-book", {

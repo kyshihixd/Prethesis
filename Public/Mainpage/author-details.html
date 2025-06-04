@@ -88,12 +88,7 @@
                     if (res.ok) {
                         const sessionData = await res.json();
                         const { userId, username, admin } = sessionData;
-                        let isAdmin = false;
-
-                    if (session && session.admin === true) {
-                        isAdmin = true;
-                    }
-
+                        isAdmin = admin;
                     }
                 } catch (e) {
                     console.log("No session - guest viewing allowed.");

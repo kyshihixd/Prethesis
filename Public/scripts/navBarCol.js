@@ -8,12 +8,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 <i class="fas fa-home me-2"></i> Home
             </a>
         </li>
-        <li class=" m-3 " style="border-radius: 15px;" id = "discoveryPageBar">
+        <li class=" m-3 " style="border-radius: 15px; display: none " id = "discoveryPageBar">
             <a href="#" id = "discoverypage" class="text-white text-decoration-none d-block  rounded hover-bg text-nowrap">
                 <i class="bi bi-radar me-2"></i> Discovery
             </a>
         </li>
-        <li class=" m-3" style="border-radius: 15px;" id = "trendingPageBar">
+        <li class=" m-3 " style="border-radius: 15px; display: none" id = "trendingPageBar">
             <a href="#" id = "trendingpage" class="text-white text-decoration-none d-block rounded hover-bg text-nowrap">
                 <i class="bi bi-graph-up me-2"></i> Trending
             </a>

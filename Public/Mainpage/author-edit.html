@@ -61,7 +61,7 @@
                                 <img id="authorImagePreview" src="" alt="Author Image" class="img-thumbnail"
                                     style="max-height: 200px" />
                             </div>
-                            <input type="file" class="form-control" id="authorCoverImagePath" name="authorCoverImagePath" />
+                            <input type="file" class="form-control" id="authorCoverImagePath" name="authorCoverImagePath" accept="image/*" />
                         </div>
 
                         <div class="mb-3">
@@ -98,7 +98,8 @@
                             <label for="genre" class="form-label">Genres (comma-separated)</label>
                             <input type="text" class="form-control" id="genre" name="genre" />
                         </div>
-
+                        <p id="errorMessage" class="text-danger text-center mt-3" style="display: none;">An error occurred.
+                        </p>
                         <button type="submit" class="btn btn-primary">
                             Save Changes
                         </button>
@@ -163,7 +164,15 @@
 
                     const params = new URLSearchParams(window.location.search);
                     const username = params.get("user");
+                    
+                    const fileInput = document.getElementById("authorCoverImagePath");
+                    const file = fileInput.files[0];
 
+                    if (file && !file.type.startsWith("image/")) {
+                        document.getElementById("errorMessage").textContent = "Only image files are allowed.";
+                        document.getElementById("errorMessage").style.display = "block";
+                        return;
+                    }
                     try {
                         const res = await fetch(`/api/author-edit/${authorId}`, {
                             method: "PUT",

@@ -96,7 +96,7 @@ router.get('/reviews', async (req, res) => {
         const reviews = await Review.find();
         var populatedReviews = await Promise.all(
             reviews.map(async (review) => {
-                return await Review.findById(review._id).limit(20).populate({path:'book', populate: {path: "title"}}).populate({path: 'user', populate: {path: "username"}}).exec();
+                return await Review.findById(review._id).populate({path:'book', populate: {path: "title"}}).populate({path: 'user', populate: {path: "username"}}).exec();
             })
         );
 
@@ -514,7 +514,20 @@ router.patch('/updateUser', async (req, res) => {
 router.delete('/reviews/:id', async (req, res) => {
     try {
         const reviewId = req.params.id;
+
+        const review = await Review.findById(reviewId);
+        if (!review) {
+            return res.status(404).json({ error: "Review not found" });
+        }
+
+        const bookId = review.book;
+
         await Review.findByIdAndDelete(reviewId);
+        await Book.findByIdAndUpdate(
+            bookId,
+            { $pull: { review: reviewId } }
+        );
+
         res.sendStatus(204);
     } catch (err) {
         console.error("Review deletion error:", err);
