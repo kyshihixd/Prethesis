@@ -464,7 +464,7 @@ router.put('/api/author-edit/:id', isAuthenticated, uploadAuthor.single("authorC
         }
 
         if (req.file) {
-            if (author.coverImagePath) {
+            if (author.coverImagePath && !author.coverImagePath.includes("default.jpg")) {
                 const oldImagePath = path.join(__dirname, '..', 'public', author.coverImagePath);
 
                 if (fs.existsSync(oldImagePath)) {
