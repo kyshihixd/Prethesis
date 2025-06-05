@@ -138,15 +138,15 @@ document.addEventListener("DOMContentLoaded", async () => {
                     a.className = "dropdown-item";
                     if (item.type === 'book') {
                         a.href = `/main/book-details?username=${username}&id=${item._id}`;
-                        a.textContent = `(Book) ${item.title}`;
+                        a.textContent = `📚 ${item.title}`;
                     }
                     else if (item.type === 'author') {
                         a.href = `/main/author-details?username=${username}&id=${item._id}`;
-                        a.textContent = `(Author) ${item.penname}`;
+                        a.textContent = `👤 ${item.penname}`;
                     }
                     else if (item.type === 'review') {
                         a.href = `/main/review-details?username=${username}&id=${item._id}`;
-                        a.textContent = `(Review) ${item.head}`;
+                        a.textContent = `📝 ${item.head}`;
                     }
                     
                     suggestionsBox.appendChild(a);

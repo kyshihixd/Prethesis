@@ -61,6 +61,7 @@
     <script src="/scripts/navBarRow.js"></script>
     <script src="/scripts/pathing.js"></script>
     <script src="/scripts/recent.js"></script>
+    <script src="/scripts/handleVote.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         /*document.addEventListener("DOMContentLoaded", async () => {
@@ -149,14 +150,28 @@
 
                             <p>${review.content}</p>
                             
-                    
+                            <div class="d-flex mt-3">
+                                <div class="border border-secondary h5 text-white rounded rounded-4 p-1 pe-3">
+                                    <span class="vote-button" data-review-id="${review._id}" data-vote-type="upvote">
+                                        <i class="bi bi-arrow-up-circle m-2"></i>
+                                    </span>
+                                    <span id="upvote-count-${review._id}">${review.upvote.length}</span>
+                                    <span class="vote-button" data-review-id="${review._id}" data-vote-type="downvote">
+                                        <i class="bi bi-arrow-down-circle m-2"></i>
+                                    </span>
+                                    <span id="downvote-count-${review._id}">${review.downvote.length}</span>
+                                </div>
+                                
+                            </div>
                         </div>
                     </div>
                 `;
 
                     reviewList.appendChild(reviewCard);
                 });
-
+                document.querySelectorAll('.vote-button').forEach(button => {
+                    button.addEventListener('click', handleVote);
+                });
                 /*
                 <div class ="d-flex">
                                     <div class ="border border-secondary h5 text-white rounded rounded-4 p-1">
@@ -174,10 +189,6 @@
                 reviewList.innerHTML = `<p>Error loading books. ${error}.</p>`;
             }
         });
-
-
-
-
         function gotobook(bookId) {
             const params = new URLSearchParams(window.location.search);
             const username = params.get("user");

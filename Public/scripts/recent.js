@@ -12,13 +12,10 @@ function setCookie(name, value, days = 7) {
 function addToRecent(item) {
     let recent = JSON.parse(getCookie("recentItems") || "[]");
 
-    // Avoid duplicates by ID + type
     recent = recent.filter(r => !(r.id === item.id && r.type === item.type));
 
-    // Add to start
     recent.unshift(item);
 
-    // Keep only last 5
     if (recent.length > 5) recent = recent.slice(0, 5);
 
     setCookie("recentItems", JSON.stringify(recent));

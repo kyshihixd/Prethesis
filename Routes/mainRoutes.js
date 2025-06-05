@@ -7,6 +7,7 @@ const Comment = require('../Server/Models/Comment');
 const router = express.Router();
 const path = require('path');
 const session = require('express-session');
+const mongoose = require('mongoose')
 const multer = require("multer");
 const fs = require('fs');
 
@@ -508,6 +509,89 @@ router.patch('/updateUser', async (req, res) => {
     } catch (err) {
         console.error("Update error:", err);
         res.status(500).json({ error: "Update failed" });
+    }
+});
+
+router.post('/reviews/:id/upvote', async (req, res) => {
+    try {
+        const reviewId = req.params.id;
+        const userId = req.session.userId;
+
+        if (!userId){
+            return res.status(401).json({message: "Not logged in"});
+        }
+        const review = await Review.findById(reviewId);
+        if (!review) {
+            return res.status(404).json({ message: 'Review not found' });
+        }
+
+        // Convert userId to ObjectId for comparison
+        const userObjectId = new mongoose.Types.ObjectId(userId);
+
+        const upvotedIndex = review.upvote.findIndex(id => id.equals(userObjectId));
+        const downvotedIndex = review.downvote.findIndex(id => id.equals(userObjectId));
+
+        if (upvotedIndex > -1) {
+            // User already upvoted, so remove the upvote (toggle)
+            review.upvote.splice(upvotedIndex, 1);
+        } else {
+            // User has not upvoted, add upvote
+            review.upvote.push(userObjectId);
+            // If user previously downvoted, remove their downvote
+            if (downvotedIndex > -1) {
+                review.downvote.splice(downvotedIndex, 1);
+            }
+        }
+
+        await review.save();
+        // Populate the review before sending back to include book and user details
+        const populatedReview = await Review.findById(reviewId).populate('book').populate('user');
+        res.json(populatedReview);
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error during upvote' });
+    }
+});
+
+// POST /reviews/:id/downvote
+router.post('/reviews/:id/downvote', async (req, res) => {
+    try {
+        const reviewId = req.params.id;
+        const userId = req.session.userId;
+
+        if (!userId){
+            return res.status(401).json({message: "Not logged in"});
+        }
+        const review = await Review.findById(reviewId);
+        if (!review) {
+            return res.status(404).json({ message: 'Review not found' });
+        }
+
+        const userObjectId = new mongoose.Types.ObjectId(userId);
+
+        const upvotedIndex = review.upvote.findIndex(id => id.equals(userObjectId));
+        const downvotedIndex = review.downvote.findIndex(id => id.equals(userObjectId));
+
+        if (downvotedIndex > -1) {
+            // User already downvoted, so remove the downvote (toggle)
+            review.downvote.splice(downvotedIndex, 1);
+        } else {
+            // User has not downvoted, add downvote
+            review.downvote.push(userObjectId);
+            // If user previously upvoted, remove their upvote
+            if (upvotedIndex > -1) {
+                review.upvote.splice(upvotedIndex, 1);
+            }
+        }
+
+        await review.save();
+        const populatedReview = await Review.findById(reviewId).populate('book').populate('user');
+        res.json(populatedReview);
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error during downvote' });
     }
 });
 

@@ -55,6 +55,7 @@
     <script src = "/scripts/navBarRow.js"></script>
     <script src = "/scripts/pathing.js"></script>
     <script src="/scripts/recent.js"></script>
+    <script src="/scripts/handleVote.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
             const reviewInfo = document.getElementById("review-info");
@@ -102,11 +103,27 @@
                             <p><strong>Final Rating:</strong> ${review.rating}</p>
                             <hr class="border-light"/>
                             <p>${review.content}</p>
+
+                            <div class="d-flex mt-3">
+                                <div class="border border-secondary h5 text-white rounded rounded-4 p-1 pe-3">
+                                    <span class="vote-button" data-review-id="${review._id}" data-vote-type="upvote">
+                                        <i class="bi bi-arrow-up-circle m-2"></i>
+                                    </span>
+                                    <span id="upvote-count-${review._id}">${review.upvote.length}</span>
+                                    <span class="vote-button" data-review-id="${review._id}" data-vote-type="downvote">
+                                        <i class="bi bi-arrow-down-circle m-2"></i>
+                                    </span>
+                                    <span id="downvote-count-${review._id}">${review.downvote.length}</span>
+                                </div>
+                                
+                            </div>
                         </div>
                     </div>
                 `;
 
-
+                    document.querySelectorAll('.vote-button').forEach(button => {
+                    button.addEventListener('click', handleVote);
+                });
             } catch (error) {
                 console.log("Error fetching book details:", error);
                 reviewInfo.innerHTML = `<p>Error loading book details. Check console for details, ${error}.</p>`;
