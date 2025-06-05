@@ -9,37 +9,34 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="icon" type="image/x-icon" href="/images/Untitled_design-removebg-preview1.png">
-    
+
     <title>Book Review Forum</title>
     <link rel="stylesheet" href="/mainpage/style.css">
     <style>
-        
-
         #mainPageBar {
             color: #fff;
             background-color: #34495e;
         }
-        
+
         body.light-mode #mainPageBar {
             color: #aaaaaa;
             background-color: #b2b3b4;
         }
-
     </style>
     <script src="/scripts/persistUsername.js"></script>
 </head>
 
-<body class="bg-dark text-light" >
-    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary border-bottom"  id="navBarRow">
-        
+<body class="bg-dark text-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary border-bottom" id="navBarRow">
+
     </nav>
 
     <div class="container-fluid g-0 ">
         <div class="row">
-            <div class = "col-2 sidebar border-end mt-2 g-0"  id = "navBarCol">
-                
+            <div class="col-2 sidebar border-end mt-2 g-0" id="navBarCol">
+
             </div>
-        
+
 
 
 
@@ -54,97 +51,97 @@
                 </div>
             </div>
 
-            <div class="col-2 mt-5 pt-5 me-5 " id = "recent">
+            <div class="col-2 mt-5 pt-5 me-5 " id="recent">
 
             </div>
         </div>
     </div>
-    
-    <script src = "/scripts/navBarCol.js"></script>
-    <script src = "/scripts/navBarRow.js"></script>
-    <script src = "/scripts/pathing.js"></script>
+
+    <script src="/scripts/navBarCol.js"></script>
+    <script src="/scripts/navBarRow.js"></script>
+    <script src="/scripts/pathing.js"></script>
     <script src="/scripts/recent.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-            /*document.addEventListener("DOMContentLoaded", async () => {
-        const bookList = document.getElementById("book-list");
+        /*document.addEventListener("DOMContentLoaded", async () => {
+    const bookList = document.getElementById("book-list");
 
-        try {
-            const response = await fetch("/books");  
-            if (!response.ok) throw new Error("Failed to fetch books");
+    try {
+        const response = await fetch("/books");  
+        if (!response.ok) throw new Error("Failed to fetch books");
 
-            const books = await response.json();
-            console.log("Fetched Books:", books); 
+        const books = await response.json();
+        console.log("Fetched Books:", books); 
 
-            if (books.length === 0) {
-                bookList.innerHTML = "<p>No books found.</p>";
-                return;
-            }
+        if (books.length === 0) {
+            bookList.innerHTML = "<p>No books found.</p>";
+            return;
+        }
 
-            books.forEach(book => {
-                const bookCard = document.createElement("div");
-                
+        books.forEach(book => {
+            const bookCard = document.createElement("div");
+            
 
-                let reviewContent = "";
-                let voteCount = 0;
-                if (book.review.length > 0){
-                    for (let i = 0; i < book.review.length; i++){
-                        reviewContent += book.review[i].content + "";
-                        voteCount += book.review[i].upvote.length - book.review[i].downvote.length;
-                        
-                    }
+            let reviewContent = "";
+            let voteCount = 0;
+            if (book.review.length > 0){
+                for (let i = 0; i < book.review.length; i++){
+                    reviewContent += book.review[i].content + "";
+                    voteCount += book.review[i].upvote.length - book.review[i].downvote.length;
+                    
                 }
-                else {reviewContent = "No content"};
+            }
+            else {reviewContent = "No content"};
 
-                bookCard.innerHTML = `
-                    <div class= "card mb-3 w-75 mx-auto book-card" onclick="gotobook('${book._id}')">
-                        <div class = "card-body">
-                            <h3>${book.title}</h3>
-                            <p><strong>Author:</strong> ${book.author[0] ? book.author[0].penname : "Unknown"}</p>
-                            <p><strong>Review:</strong> ${reviewContent}</p> 
-                            
-                            <div class ="d-flex">
-                                <div class ="border border-secondary h5 text-white rounded rounded-4 p-1">
-                                <i class="bi bi-arrow-up-circle m-2"></i>   ${voteCount}   <i class="bi bi-arrow-down-circle m-2"></i>
-                                </div>
+            bookCard.innerHTML = `
+                <div class= "card mb-3 w-75 mx-auto book-card" onclick="gotobook('${book._id}')">
+                    <div class = "card-body">
+                        <h3>${book.title}</h3>
+                        <p><strong>Author:</strong> ${book.author[0] ? book.author[0].penname : "Unknown"}</p>
+                        <p><strong>Review:</strong> ${reviewContent}</p> 
+                        
+                        <div class ="d-flex">
+                            <div class ="border border-secondary h5 text-white rounded rounded-4 p-1">
+                            <i class="bi bi-arrow-up-circle m-2"></i>   ${voteCount}   <i class="bi bi-arrow-down-circle m-2"></i>
+                            </div>
 
-                                <div class ="ms-4 border border-secondary h5 text-white rounded rounded-4 p-1">
-                                <i class="bi bi-chat m-2 me-2"></i><div class = "me-2 d-inline">2</div>
-                                </div>
+                            <div class ="ms-4 border border-secondary h5 text-white rounded rounded-4 p-1">
+                            <i class="bi bi-chat m-2 me-2"></i><div class = "me-2 d-inline">2</div>
                             </div>
                         </div>
                     </div>
-                `;
+                </div>
+            `;
 
-                bookList.appendChild(bookCard);
-            });
-        } catch (error) {
-            console.error("Error fetching books:", error);
-            bookList.innerHTML = "<p>Error loading books. Check console for details.</p>";
-        }
-    });
-    */
+            bookList.appendChild(bookCard);
+        });
+    } catch (error) {
+        console.error("Error fetching books:", error);
+        bookList.innerHTML = "<p>Error loading books. Check console for details.</p>";
+    }
+});
+*/
 
-    document.addEventListener("DOMContentLoaded", async () => {
-        const reviewList = document.getElementById("review-list");
+        document.addEventListener("DOMContentLoaded", async () => {
+            const reviewList = document.getElementById("review-list");
 
-        try {
-            const response = await fetch("/reviews");  
-            if (!response.ok) throw new Error("Failed to fetch reviews");
+            try {
+                const response = await fetch("/reviews");
+                if (!response.ok) throw new Error("Failed to fetch reviews");
 
-            const reviews = await response.json();
+                const reviews = await response.json();
 
-            if (reviews.length === 0) {
-                reviewList.innerHTML = "<p>No reviews found.</p>";
-                return;
-            }
+                if (reviews.length === 0) {
+                    reviewList.innerHTML = "<p>No reviews found.</p>";
+                    return;
+                }
 
-            reviews.forEach(review => {
-                const reviewCard = document.createElement("div");
-                
+                reviews.forEach(review => {
+                    const reviewCard = document.createElement("div");
 
 
-                reviewCard.innerHTML = `
+
+                    reviewCard.innerHTML = `
                     <div class= "card mb-3 w-75 mx-auto book-card" onclick="gotoreview('${review._id}')">
                         <div class = "card-body">
                             <h3>${review.head}</h3>
@@ -157,41 +154,41 @@
                     </div>
                 `;
 
-                reviewList.appendChild(reviewCard);
-            });
+                    reviewList.appendChild(reviewCard);
+                });
 
-            /*
-            <div class ="d-flex">
-                                <div class ="border border-secondary h5 text-white rounded rounded-4 p-1">
-                                <i class="bi bi-arrow-up-circle m-2"></i>   2   <i class="bi bi-arrow-down-circle m-2"></i>
+                /*
+                <div class ="d-flex">
+                                    <div class ="border border-secondary h5 text-white rounded rounded-4 p-1">
+                                    <i class="bi bi-arrow-up-circle m-2"></i>   2   <i class="bi bi-arrow-down-circle m-2"></i>
+                                    </div>
+    
+                                    
+                                    <div class ="ms-4 border border-secondary h5 text-white rounded rounded-4 p-1">
+                                    <i class="bi bi-chat m-2 me-2"></i><div class = "me-2 d-inline">2</div>
+                                    </div>
                                 </div>
+                                */
+            } catch (error) {
+                console.error("Error fetching books:", error);
+                reviewList.innerHTML = `<p>Error loading books. ${error}.</p>`;
+            }
+        });
 
-                                
-                                <div class ="ms-4 border border-secondary h5 text-white rounded rounded-4 p-1">
-                                <i class="bi bi-chat m-2 me-2"></i><div class = "me-2 d-inline">2</div>
-                                </div>
-                            </div>
-                            */
-        } catch (error) {
-            console.error("Error fetching books:", error);
-            reviewList.innerHTML = `<p>Error loading books. ${error}.</p>`;
+
+
+
+        function gotobook(bookId) {
+            const params = new URLSearchParams(window.location.search);
+            const username = params.get("user");
+            window.location.href = `/main/books?user=${username}&id=${bookId}`;
         }
-    });
 
-
-
-
-    function gotobook(bookId) {
-        const params = new URLSearchParams(window.location.search);
-        const username = params.get("user");
-        window.location.href = `/main/books?user=${username}&id=${bookId}`;
-    }
-
-    function gotoreview(reviewId) {
-        const params = new URLSearchParams(window.location.search);
-        const username = params.get("user");
-        window.location.href = `/main/review-details?user=${username}&id=${reviewId}`;
-    }
+        function gotoreview(reviewId) {
+            const params = new URLSearchParams(window.location.search);
+            const username = params.get("user");
+            window.location.href = `/main/review-details?user=${username}&id=${reviewId}`;
+        }
 
     </script>
 </body>
